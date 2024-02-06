@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farm Page</title>
@@ -75,11 +81,6 @@
         .machine_content {
             display: flex;
             flex-direction: column;
-        }
-        .add_button {
-            position: absolute;
-            top: 245px;
-            left: 400px;
         }
         
 
@@ -157,21 +158,39 @@
             </div>
             <hr>
             <div class="machine_content">
-                작업기 현황
-                <div class="add_button">
-                    <a href="{% url 'farm:add_work' %}">
-                        <button type="button" class="btn btn-outline-dark" style="--bs-btn-padding-y: .13rem; --bs-btn-padding-x: .8rem; --bs-btn-font-size: .9rem; --bs-btn-border-radius: 0rem;">작업추가</button>
-                    </a>
-                    
+                <!-- 탑뷰 -->
+                <div style="display:flex;">
+                    <span class="material-symbols-outlined" style="margin-right:15px; margin-left:10px">precision_manufacturing</span>
+                    <div style="flex:3;">작업기 현황</div>
+                    <div style="flex:1;">
+                        <a href="{% url 'work:add_work' %}">
+                            <button type="button" class="btn btn-outline-dark" style="--bs-btn-padding-y: .13rem; --bs-btn-padding-x: .8rem; --bs-btn-font-size: .9rem; --bs-btn-border-radius: 0rem;">작업추가</button>
+                        </a>
+                    </div>
                 </div>
+
 
             </div>
 
         </div>
 
         <div class="content map_page">  
-            어디 살아
+            <div id="map" style="width: 100%; height: 400px;"></div>
         </div>
+        <script>
+            // 맵을 초기화하고 표시하는 스크립트 부분
+            function initMap() {
+                var mapOptions = {
+                    center: {lat: 37.2703, lng: 126.9884},
+                    zoom: 20
+                };
+                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            }
+            // 맵을 초기화하는 함수를 호출합니다.
+            window.onload = function() {
+            initMap();
+            };
+        </script>
     </main>  
 </body>
 </html>

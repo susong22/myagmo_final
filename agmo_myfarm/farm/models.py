@@ -33,38 +33,21 @@ class FarmField(models.Model):
     # location = models. (이부분은 api로 맵을 따오거나, 좌표값으로 받아올것)
     crop = models.CharField(blank=True, choices=CROP , max_length=225)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것
-    class Meta:
-        app_label = 'farm'
-
-
-class Machine(TimeStampedModel):
-    farm_machine_user = models.ForeignKey(
-        user_model.User, 
-        null=True, 
-        on_delete=models.CASCADE, 
-        related_name='machine_user')
-
     
-    machine_name = models.CharField(blank=True, max_length=255)
-    contents = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
-    battery = models.IntegerField()
+    weather_date = models.CharField()
+    weather_time = models.CharField()
+    is_rain = models.FloatField()             # 강수 확률(POP)
+    rain_sh = models.CharField()              # 강수 형태(PTY)
+    temperature = models.FloatField()         # 1시간 기온(TMP)
+    humidity = models.FloatField()            # 습 도(REH)
+    wind_direction = models.CharField()       # 풍 향(VEC)
+    wind_speed = models.FloatField()          # 풍 속(WSD)
+    sky_sh = models.CharField()               # 하늘 상태(SKY)
+    
     class Meta:
         app_label = 'farm'
 
-class Weather(TimeStampedModel):
-     weather_date = models.CharField()
-     weather_time = models.CharField()
-     is_rain = models.FloatField()             # 강수 확률(POP)
-     rain_sh = models.CharField()              # 강수 형태(PTY)
-     temperature = models.FloatField()         # 1시간 기온(TMP)
-     humidity = models.FloatField()            # 습 도(REH)
-     wind_direction = models.CharField()       # 풍 향(VEC)
-     wind_speed = models.FloatField()          # 풍 속(WSD)
-     sky_sh = models.CharField()               # 하늘 상태(SKY)
-     
-     class Meta:
-        app_label = 'farm'
+
 
 # Create your models here.
 # Create your models here.

@@ -1,6 +1,59 @@
-<form action="{% url 'users:main' %}" method="post">
-    {% csrf_token %}
-    <input type="input" name="username" placeholder="username">
-    <input type="password" name="password" placeholder="password">
-    <input type="submit" value="Login">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> 
+<title>Login Page</title>
+<style>
+    body {
+        height: 100%;
+        background-image: url("https://cdn.britannica.com/50/202950-050-DFF457E3/Farm-tractor-pesticides-crops.jpg"); /* 이미지 경로 입력 */
+        background-size: cover;
+    }
+    form {
+        width:50px;
+        display: flex;
+        flex-direction: column;
+        margin-top: 21px;
+        margin-left:134px;
+        gap: 10px;
+    }
+
+    input {
+        padding: 8px;
+        width: 271px;
+    }
+
+    input[type="submit"] {
+        padding: 8px 20px;
+        background-color: #274131;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    a{
+        color:black;
+    }
+</style>
+</head>
+
+
+<body>
+    <div class="body"> 
+        <img style="height: 49px;margin-top:74px;margin-left:141px;" src="https://agmo.farm/assets/images/logo-white.svg">
+    </div>
+    <div style="justify-content: flex-start;">
+        <form action="{% url 'users:main' %}" method="post" >
+             {% csrf_token %}
+            <input type="input" name="username" placeholder="username">
+            <input type="password" name="password" placeholder="password">
+            <input type="submit" value="Login">
+            <a href="{https://www.agmo.farm/}">https://www.agmo.farm/</a>
+        </form> 
+        
+    </div>
+     
+
+</body>
+</html>

@@ -8,7 +8,7 @@ from django.views.generic import DetailView, RedirectView, UpdateView
 import json
 import requests
 import urllib.request
-from .models import Weather
+from work.models import Weather
 
 def main(request):
     wea = Weather()
@@ -89,6 +89,3 @@ def main(request):
         return render(request, 'farm/farm_main.html', {'wea':wea})
     
 
-def add_work(request):
-    # wea = request.session.get('wea')
-    return render(request, 'farm/add_work.html')

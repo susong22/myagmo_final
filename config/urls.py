@@ -13,6 +13,7 @@ urlpatterns = [
     #path("", include("agmo_myfarm.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     path("", include("farm.urls", namespace="farm")),
+    path("", include("work.urls", namespace="work")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -25,13 +25,16 @@ class Works(TimeStampedModel):
         )
     #경작지 위치를 fields table의 location에서 받아올 예정입니다
     
-    work_machine = models.ForeignKey(
-        farm_model.Machine, 
-        null=True, 
-        on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='work_farm_machine'
-        )
-    #작업기명을 fiedls table의 machine에서 받아올 예정입니다
+    machine_user = models.ForeignKey(
+    user_model.User, 
+    null=True, 
+    on_delete=models.CASCADE, 
+    related_name='machine_user')
+    
+    machine_name = models.CharField(blank=True, max_length=255)
+    contents = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    battery = models.IntegerField()
 
     start_point = models.PointField()
     end_point = models.PointField()
@@ -60,3 +63,17 @@ class Works(TimeStampedModel):
         app_label = 'work'
 
 # Create your models here.
+class Machine(TimeStampedModel):
+    farm_machine_user = models.ForeignKey(
+        user_model.User, 
+        null=True, 
+        on_delete=models.CASCADE, 
+        related_name='machine_user')
+
+    
+    machine_name = models.CharField(blank=True, max_length=255)
+    contents = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    battery = models.IntegerField()
+    class Meta:
+        app_label = 'farm'
