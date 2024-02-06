@@ -10,9 +10,9 @@ urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("", include("agmo_myfarm.users.urls", namespace="users")),
+    #path("", include("agmo_myfarm.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    path("home/", include('home.urls', namespace="home")),
+    path("", include("farm.urls", namespace="farm")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

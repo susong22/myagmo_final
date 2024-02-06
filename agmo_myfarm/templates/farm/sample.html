@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    날씨 API 불러오기 예제
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  
+  <div class="card" style="width: 18rem;">
+    <div class="card-header">
+      공공데이터 포털
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">날짜: {{ wea.weather_date }}</li>
+      <li class="list-group-item">시간: {{ wea.weather_time }}</li>
+      <li class="list-group-item">기온: {{ wea.temperature }} 'C</li>
+      <li class="list-group-item">습도: {{ wea.humidity }} %</li>
+      <li class="list-group-item">풍향: {{ wea.wind_direction }} deg</li>
+      <li class="list-group-item">풍속: {{ wea.wind_speed }} m/s</li>
+      <li class="list-group-item">하늘상태: {{ wea.sky_clear }}</li>
+    </ul>
+  </div>
+
+  
+
+</body>
+</html>
+

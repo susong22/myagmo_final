@@ -53,9 +53,15 @@ class Machine(TimeStampedModel):
         app_label = 'farm'
 
 class Weather(TimeStampedModel):
-     temperature = models.FloatField() #기상청에서 크롤링해서 올 경우 별도의 처리가 필요함
-     humidity = models.FloatField() #기상청에서 크롤링해서 올 경우 별도의 처리가 필요함
-     wind_speed = models.FloatField() #기상청에서 크롤링해서 올 경우 별도의 처리가 필요함
+     weather_date = models.CharField()
+     weather_time = models.CharField()
+     is_rain = models.FloatField()             # 강수 확률(POP)
+     rain_sh = models.CharField()              # 강수 형태(PTY)
+     temperature = models.FloatField()         # 1시간 기온(TMP)
+     humidity = models.FloatField()            # 습 도(REH)
+     wind_direction = models.CharField()       # 풍 향(VEC)
+     wind_speed = models.FloatField()          # 풍 속(WSD)
+     sky_sh = models.CharField()               # 하늘 상태(SKY)
      
      class Meta:
         app_label = 'farm'
