@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm Page</title>
+    <title>Add_work Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
 
@@ -29,9 +31,6 @@
         .map_page {
             flex: 2;
         }
-        .back_button {
-            
-        }
         .add_icon {
             position: absolute;
             top: 10px;
@@ -44,7 +43,7 @@
     
     <header>
         <!-- 헤더 고정 -->
-        {% include 'farm/header.html' %}
+        {% include 'work/header.html' %}
     </header>
 
     <main>
@@ -57,7 +56,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작업 추가
                     </div>
                     <div class="back_button" style="flex:1;">
-                        <a href="{% url 'farm:main' %}">
+                        <a href="{% url 'work:main' %}">
                             <button type="button" class="btn-close" aria-label="Close"></button>
                         </a>
                     </div>
@@ -70,28 +69,156 @@
                 </div>
 
                 <div class="card-body text-secondary">
-                    <!--  작업 이름 설정  -->
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control border-bottom" placeholder="작업 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
-                    </div>
+                    <form action="{% url 'work:add_work' %}" method="post">
 
-                    <!--  배치할 경작지  -->
-                    <select class="form-select form-select-sm" name="selected_farm">
-                        <select name="selected_option">
-                            {% for option in options %}
-                                <option value="{{ option }}">{{ option }}</option>
-                            {% endfor %}
-                        </select>
-                    </select>
+                        <!--  작업 이름 설정  -->
+                        <div class="input-group mb-3" style="margin-top: 10px;">
+                            <input type="text" class="form-control border-bottom" placeholder="작업 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
+                        </div>
+
+                        <!--  배치할 경작지  -->
+                        <div style="display: flex; margin-top: 30px; margin-left: 20px; color:black; font-weight: 800;">
+                            <div style="margin-right: 30px;">
+                                배치할 경작지
+                            </div>
+                            <select class="form-select" name="selected_farm" style="width: 200px; height: 30px;">
+                                <select name="selected_option">
+                                    {% for option in options %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                        </div>
+
+                        <!--  작업기 종류  -->
+                        <div style="display: flex; margin-top: 20px; margin-left: 20px; color:black; font-weight: 800;">
+                            <div style="margin-right: 46px;">
+                                작업기 종류
+                            </div>
+                            <select class="form-select" name="selected_farm" style="width: 200px; height: 30px;">
+                                <select name="selected_option">
+                                    {% for option in options %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                        </div>
+
+                        <!-- 시작 일자 선택 -->
+                        <div style="display: flex; margin-top: 20px; margin-left: 20px; color:black; font-weight: 800;">
+                            <div style="margin-right: 100px;">
+                                기간
+                            </div>
+                            <!-- 시작 년도 선택 -->
+                            <select class="form-select" name="selected_farm" style="width: 200px; height: 30px;">
+                                <select name="start_year">
+                                    {% for i in year_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                            <div style="margin-right: 4px;">
+                                년
+                            </div>
+
+                            <!-- 시작 월 선택 -->
+                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
+                                <select name="start_month">
+                                    {% for i in month_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                            <div style="margin-right: 4px;">
+                                월
+                            </div>
+
+                            <!-- 시작 일 선택 -->
+                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
+                                <select name="start_day">
+                                    {% for i in day_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                            <div style="margin-right: 4px;">
+                                일
+                            </div>
+                        </div>
+
+                        <!-- 마감 일자 선택 -->
+                        <div style="display: flex; margin-top: 20px; margin-left: 130px; color:black; font-weight: 800;">
+                            <div style="margin-right: 10px;">
+                                ~
+                            </div>
+                            <!-- 마감 년도 선택 -->
+                            <select class="form-select" name="selected_farm" style="width: 60px; height: 30px;">
+                                <select name="end_year">
+                                    {% for i in year_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                            <div style="margin-right: 4px;">
+                                년
+                            </div>
+
+                            <!-- 마감 월 선택 -->
+                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
+                                <select name="end_month">
+                                    {% for i in month_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                            <div style="margin-right: 4px;">
+                                월
+                            </div>
+
+                            <!-- 마감 일 선택 -->
+                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
+                                <select name="end_day">
+                                    {% for i in day_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </select>
+                            <div style="margin-right: 4px;">
+                                일
+                            </div>
+                        </div>
+
+                        <!-- 제출 버튼 -->
+                        <div style="display: flex; justify-content:flex-end; margin-top: 20px;">
+                            <input type="submit" value="추가하기">
+                        </div>
+                    </form>
 
 
                 </div>
             </div>
         </div>
 
+        <!-- 구글맵 도시 -->
         <div class="content map_page">  
-            어떻게 해
+            <div id="map" style="width: 100%; height: 100%"></div>
         </div>
+        <script>
+            // 맵을 초기화하고 표시하는 스크립트 부분
+            function initMap() {
+                var mapOptions = {
+                    center: {lat: 37.2703, lng: 126.9884},
+                    zoom: 20,
+                    mapTypeControl: false,
+                    mapTypeId: google.maps.MapTypeId.SATELLITE
+                };
+                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            }
+            // 맵을 초기화하는 함수를 호출합니다.
+            window.onload = function() {
+            initMap();
+            };
+        </script>
 
     </main>  
 </body>

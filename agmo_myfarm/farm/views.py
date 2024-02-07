@@ -1,3 +1,5 @@
+'''
+
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -89,3 +91,4 @@ def main(request):
         return render(request, 'farm/farm_main.html', {'wea':wea})
     
 
+'''
