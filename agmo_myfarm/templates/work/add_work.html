@@ -70,37 +70,34 @@
 
                 <div class="card-body text-secondary">
                     <form action="{% url 'work:add_work' %}" method="post">
+                        {% csrf_token %}
 
-                        <!--  작업 이름 설정  -->
+                        <!--  작업 이름 설정(work_name)  -->
                         <div class="input-group mb-3" style="margin-top: 10px;">
-                            <input type="text" class="form-control border-bottom" placeholder="작업 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
+                            <input type="text" name="work_name" class="form-control border-bottom" placeholder="작업 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
                         </div>
 
-                        <!--  배치할 경작지  -->
+                        <!--  배치할 경작지(work_place)  -->
                         <div style="display: flex; margin-top: 30px; margin-left: 20px; color:black; font-weight: 800;">
                             <div style="margin-right: 30px;">
                                 배치할 경작지
                             </div>
-                            <select class="form-select" name="selected_farm" style="width: 200px; height: 30px;">
-                                <select name="selected_option">
+                            <select class="form-select" name="work_place" style="width: 200px; height: 30px;">
                                     {% for option in options %}
                                         <option value="{{ option }}">{{ option }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                         </div>
 
-                        <!--  작업기 종류  -->
+                        <!--  작업기 종류(work_machine)  -->
                         <div style="display: flex; margin-top: 20px; margin-left: 20px; color:black; font-weight: 800;">
                             <div style="margin-right: 46px;">
                                 작업기 종류
                             </div>
-                            <select class="form-select" name="selected_farm" style="width: 200px; height: 30px;">
-                                <select name="selected_option">
+                            <select class="form-select" name="work_machine" style="width: 200px; height: 30px;">
                                     {% for option in options %}
                                         <option value="{{ option }}">{{ option }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                         </div>
 
@@ -109,37 +106,31 @@
                             <div style="margin-right: 100px;">
                                 기간
                             </div>
-                            <!-- 시작 년도 선택 -->
-                            <select class="form-select" name="selected_farm" style="width: 200px; height: 30px;">
-                                <select name="start_year">
-                                    {% for i in year_list %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
+                            <!-- 시작 년도 선택(start_year) -->
+                            <select class="form-select" name="start_year" style="width: 70px; height: 30px; padding: 2px;">
+                                {% for i in year_list %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
                             </select>
                             <div style="margin-right: 4px;">
                                 년
                             </div>
 
-                            <!-- 시작 월 선택 -->
-                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
-                                <select name="start_month">
+                            <!-- 시작 월 선택(start_month) -->
+                            <select class="form-select" name="start_month" style="width: 50px; height: 30px; padding: 2px;">
                                     {% for i in month_list %}
                                         <option value="{{ i }}">{{ i }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                             <div style="margin-right: 4px;">
                                 월
                             </div>
 
-                            <!-- 시작 일 선택 -->
-                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
-                                <select name="start_day">
+                            <!-- 시작 일 선택(start_day) -->
+                            <select class="form-select" name="start_day" style="width: 50px; height: 30px; padding: 2px;">
                                     {% for i in day_list %}
                                         <option value="{{ i }}">{{ i }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                             <div style="margin-right: 4px;">
                                 일
@@ -151,37 +142,31 @@
                             <div style="margin-right: 10px;">
                                 ~
                             </div>
-                            <!-- 마감 년도 선택 -->
-                            <select class="form-select" name="selected_farm" style="width: 60px; height: 30px;">
-                                <select name="end_year">
+                            <!-- 마감 년도 선택(end_year) -->
+                            <select class="form-select" name="end_year" style="width: 70px; height: 30px; padding: 2px;">
                                     {% for i in year_list %}
                                         <option value="{{ i }}">{{ i }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                             <div style="margin-right: 4px;">
                                 년
                             </div>
 
-                            <!-- 마감 월 선택 -->
-                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
-                                <select name="end_month">
+                            <!-- 마감 월 선택(end_month) -->
+                            <select class="form-select" name="end_month" style="width: 50px; height: 30px; padding: 2px;">
                                     {% for i in month_list %}
                                         <option value="{{ i }}">{{ i }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                             <div style="margin-right: 4px;">
                                 월
                             </div>
 
-                            <!-- 마감 일 선택 -->
-                            <select class="form-select" name="selected_farm" style="width: 50px; height: 30px;">
-                                <select name="end_day">
+                            <!-- 마감 일 선택(end_day) -->
+                            <select class="form-select" name="end_day" style="width: 50px; height: 30px; padding: 2px;">
                                     {% for i in day_list %}
                                         <option value="{{ i }}">{{ i }}</option>
                                     {% endfor %}
-                                </select>
                             </select>
                             <div style="margin-right: 4px;">
                                 일
