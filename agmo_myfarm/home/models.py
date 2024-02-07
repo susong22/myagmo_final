@@ -33,21 +33,6 @@ class Home(TimeStampedModel):
         )
     #expected_path와 crop을 work의 Works에서 받아온다
 
-    home_machines = models.ForeignKey(
-        farm_model.Machine, 
-        null=True, 
-        on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='home_farm_machine'
-        )
-    #is_active, battery, machine_name을 farm의 Machine에서 받아온다
-
-    home_weather = models.ForeignKey(
-        farm_model.Weather, 
-        null=True, 
-        on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='hoem_farm_weather'
-        )
-    #weather을 farm의 Weather에서 받아온다
 
     home_farmfield = models.ForeignKey(
         farm_model.FarmField, 
@@ -55,7 +40,7 @@ class Home(TimeStampedModel):
         on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
         related_name='home_farm_farmfield'
         )
-    #soil_moisture을 farm의 FarmField에서 받아온다
+    #soil_moisture, weather을 farm의 FarmField에서 받아온다
 
     mymemo = models.TextField(blank=True)
 

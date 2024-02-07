@@ -50,7 +50,7 @@ class Works(TimeStampedModel):
         farm_model.FarmField, 
         null=True, 
         on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='work_farm_crop'
+        related_name='farm_farm_crop'
         )
     user_memo = models.TextField(blank=True)
     estimated_hours = models.IntegerField(default=0, help_text='예상 작업시간: 시간')
@@ -63,17 +63,3 @@ class Works(TimeStampedModel):
         app_label = 'work'
 
 # Create your models here.
-class Machine(TimeStampedModel):
-    farm_machine_user = models.ForeignKey(
-        user_model.User, 
-        null=True, 
-        on_delete=models.CASCADE, 
-        related_name='machine_user')
-
-    
-    machine_name = models.CharField(blank=True, max_length=255)
-    contents = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
-    battery = models.IntegerField()
-    class Meta:
-        app_label = 'farm'

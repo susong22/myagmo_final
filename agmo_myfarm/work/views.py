@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Works
-from .models import FarmField
+from farm.models import FarmField
 
 def main(request):
     pass

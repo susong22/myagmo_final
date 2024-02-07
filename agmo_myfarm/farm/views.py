@@ -8,22 +8,22 @@ from django.views.generic import DetailView, RedirectView, UpdateView
 import json
 import requests
 import urllib.request
-from work.models import Weather
+from farm.models import FarmField
 
 def main(request):
-    wea = Weather()
+    wea = FarmField()
     # request.session['wea'] = wea  # 이 객체를 다른 함수에서 사용하기 위해서는 Serializer 필요
     sky_status = {
             '1':"맑음", '3':'구름많음', '4': '흐림'
         }
     rain_status = {
-        '1':"없음", '1':"비", '2':"비/눈", '3':"눈", '4':"소나기"
+        '0':"없음", '1':"비", '2':"비/눈", '3':"눈", '4':"소나기"
     }
 
     if request.method == 'GET':
         url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
         key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
-        date = '20240205'      # 20240203
+        date = '20240206'      # 20240203
         time = '0500'      # 0200부터 3시간 단위
         place = [55, 127]   # 위도, 경도    <- 다른 def 에서 불러와야함
 
