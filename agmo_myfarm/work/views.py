@@ -10,9 +10,16 @@ import json
 import requests
 import urllib.request
 from farm.models import FarmField
+from .models import Works
+from django.utils import timezone
+from .forms import WorkForm
+
+wea = FarmField()
+work1 = Works(work_name = '작업1', machine_name = '써레', start_date_year='2024', start_date_month='02', start_date_day='08')
+work2 = Works(work_name = '작업2', machine_name = '파종', start_date_year='2024', start_date_month='02', start_date_day='09')
+
 
 def main(request):
-    wea = FarmField()
     # request.session['wea'] = wea  # 이 객체를 다른 함수에서 사용하기 위해서는 Serializer 필요
     sky_status = {
             '1':"맑음", '3':'구름많음', '4': '흐림'
@@ -20,11 +27,16 @@ def main(request):
     rain_status = {
         '0':"없음", '1':"비", '2':"비/눈", '3':"눈", '4':"소나기"
     }
+    current_datetime = timezone.now()
+    current_year = current_datetime.year
+    current_month = current_datetime.month
+    current_day = current_datetime.day
 
     if request.method == 'GET':
         url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
         key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
-        date = '20240206'      # 20240203
+        #date = '20240207'      # 20240203
+        date = str(current_year) + str(current_month).zfill(2) + str(current_day).zfill(2)
         time = '0500'      # 0200부터 3시간 단위
         place = [55, 127]   # 위도, 경도    <- 다른 def 에서 불러와야함
 
@@ -90,23 +102,90 @@ def main(request):
         return render(request, 'work/work_main.html', {'wea':wea})
 
 def add_work(request):
-    # wea = request.session.get('wea')
-    day_list = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
-    month_list = [1,2,3,4,5,6,7,8,9,10,11,12]
-    year_list = [2024,2025,2026,2027,2028,2029,2030]
+        # wea = request.session.get('wea')
+        day_list = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+        month_list = [1,2,3,4,5,6,7,8,9,10,11,12]
+        year_list = [2024,2025,2026,2027,2028,2029,2030]
 
-    work_obj = Works()
-    farm1 = FarmField()
-    farm2 = FarmField()
-    if request.method == 'POST':
-        pass
-    
-    content = {
-        'day_list' : day_list,
-        'month_list' : month_list,
-        'year_list' : year_list,
-        'farm1' : farm1,
-        'farm2' : farm2,
-    }
 
-    return render(request, 'work/add_work.html', content)
+        farm1 = FarmField(field_name="경작지1")
+        farm2 = FarmField(field_name="경작지2")
+        farmfield_list = [farm1, farm2]
+        machine_list = ['써레', '파종기', '스프레이어']
+        crop_list = ['밀', '벼', '콩', '감자']
+
+        if request.method == 'GET':
+            formset = WorkForm()
+            content = {
+            'day_list' : day_list,
+            'month_list' : month_list,
+            'year_list' : year_list,
+            'farm1' : farm1,
+            'farm2' : farm2,
+            'farmfield_list' : farmfield_list,
+            'machine_list' : machine_list,
+            'crop_list' : crop_list,
+            'formset': formset,
+            'wea':wea,
+            }
+            return render(request, 'work/add_work.html', content)
+            
+
+        if request.method == 'POST':
+            formset = WorkForm(request.POST)
+            if formset.is_valid():
+                formset.save()
+                render(request, 'work/work_main.html', {'wea':wea})
+            else:
+                print(formset.errors)
+                print(request.POST)
+                formset = WorkForm()  
+                
+
+        content = {
+            'day_list' : day_list,
+            'month_list' : month_list,
+            'year_list' : year_list,
+            'farm1' : farm1,
+            'farm2' : farm2,
+            'farmfield_list' : farmfield_list,
+            'machine_list' : machine_list,
+            'crop_list' : crop_list,
+            'formset': formset,
+            'wea':wea,
+            }
+
+        return render(request, 'work/add_work.html', content)
+
+
+def get_expected_path(request):
+    df = pd.read_csv(r'C:\Users\82105\Downloads\AGMO_Data_set1.csv', sheet_name='농지경계', header=None)
+
+    # 특정 범위의 데이터를 선택합니다.
+    selected_data = df.iloc[1:6, 1:3]  # B열 2번부터 C열 6번까지
+
+    # 선택된 데이터를 딕셔너리 리스트로 변환합니다.
+    expected_path = selected_data.to_dict(orient='records')
+
+    tm_proj = Proj(init='epsg:5179')  # TM 좌표계 (EPSG:5179)
+    wgs84_proj = Proj(init='epsg:4326')  # 위경도 좌표계 (EPSG:4326)
+
+    expected_path_lonlat = []
+    for point in expected_path:
+        tm_x, tm_y = point['x'], point['y']
+        lon, lat = transform(tm_proj, wgs84_proj, tm_x, tm_y)
+        point['lon'] = lon
+        point['lat'] = lat
+        expected_path_lonlat.append(point)
+        print(f"TM 좌표: ({tm_x}, {tm_y}), 위경도 좌표: ({lon}, {lat})")
+
+    json_expected_path = json.dumps(expected_path_lonlat)
+# 이부분에서 문제가 발생한다. JSON 형태로 바꾸는부분에서ㅜㅜ 
+    print(json.dumps(expected_path_lonlat))
+
+    return render(request, 'work/work_main.html', {'json_expected_path':json_expected_path})
+
+def add_machine_card(request):
+    if request.method == 'GET':
+        for obj in Works.objects.all():
+            pass

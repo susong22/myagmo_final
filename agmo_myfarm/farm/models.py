@@ -7,6 +7,7 @@ from django.db.models import FloatField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from agmo_myfarm.users import models as user_model
+from django.contrib.gis.db import models
 
 #데이터의 생성시간 업데이트 시간을 기록한다
 class TimeStampedModel(models.Model):
@@ -30,7 +31,7 @@ class FarmField(models.Model):
         related_name='field_user')
     
     field_name = models.CharField(blank=True, max_length=255)
-    # location = models. (이부분은 api로 맵을 따오거나, 좌표값으로 받아올것)
+    location = models.PointField() 
     crop = models.CharField(blank=True, choices=CROP , max_length=225)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것
     
@@ -44,6 +45,8 @@ class FarmField(models.Model):
     wind_speed = models.FloatField()          # 풍 속(WSD)
     sky_sh = models.CharField()               # 하늘 상태(SKY)
     
+    
+
     class Meta:
         app_label = 'farm'
 

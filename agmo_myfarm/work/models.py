@@ -14,8 +14,15 @@ class TimeStampedModel(models.Model):
 
 class Works(TimeStampedModel):
     work_name = models.CharField(blank=True, max_length=255)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    #start_date = models.DateField()
+    #end_date = models.DateField()
+    start_date_year = models.CharField()
+    start_date_month = models.CharField()
+    start_date_day = models.CharField()
+
+    end_date_year = models.CharField()
+    end_date_month = models.CharField()
+    end_date_day = models.CharField()
 
     work_fields = models.ForeignKey(
         farm_model.FarmField, 

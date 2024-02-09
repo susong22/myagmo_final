@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add_work Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            
+        }
+        header {
+            text-align: center;
+        }
+        main {
+            display: flex;
+            flex: 1;
+        }
+        .machine_page {
+            background-color: #f9f5f5;
+            flex: 1;
+        }
+        .map_page {
+            flex: 2;
+        }
+        .add_icon {
+            position: absolute;
+            top: 10px;
+            left: 14px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <header>
+        <!-- 헤더 고정 -->
+        {% include 'work/header.html' %}
+    </header>
+
+    <main>
+
+        <div class="machine_page">
+            <div class="card border-secondary mb-3" style="max-width: 30rem; height: 36rem; margin: 10px; border: none;">
+                
+                <div class="card-header" style="font-size: 20px; font-weight: bold; display: flex;">
+                    <div style="flex:12;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;경작지 추가
+                    </div>
+                    <div class="back_button" style="flex:1;">
+                        <a href="{% url 'work:main' %}">
+                            <button type="button" class="btn-close" aria-label="Close"></button>
+                        </a>
+                    </div>
+                </div>
+                <div class="add_icon"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                    </svg>
+                </div>
+
+                <div class="card-body text-secondary">
+                    <form action="{% url 'work:add_work' %}" method="post">
+                        {% csrf_token %}
+                        {{ formset.management_form }}
+                        
+                        <!--  경작지 이름 설정  -->
+                        <div class="input-group mb-3" style="margin-top: 10px;">
+                            <input type="text" name="work_name" class="form-control border-bottom" placeholder="경작지 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
+                        </div>
+
+                        
+
+                        <!--  작물 종류(crop)  -->
+                        <div style="display: flex; margin-top: 20px; margin-left: 10px; color:black; font-weight: 800;">
+                            <div style="margin-right: 62px;">
+                                작물 종류
+                            </div>
+                            <select class="form-select" name="crop" style="width: 200px; height: 30px; padding: 2px">
+                                    {% for crop in crop_list %}
+                                        <option value="{{ crop }}">{{ crop }}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+
+                        <!--  위치 설정  -->
+                        <div style="display: flex; margin-top: 20px; margin-left: 10px; color:black; font-weight: 800;">
+                            <div style="margin-right: 222px;">
+                                위치 설정
+                            </div>
+                            <a href="{% url 'farm:add_farmfield' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                  </svg>
+                            </a>
+                        </div>
+
+
+                        <!-- 상세 메모 -->
+                        <div class="input-group" style="margin-top: 130px;">
+                            <textarea class="form-control" name="user_memo" aria-label="With textarea" style="resize: none; height: 180px;"  placeholder="상세 메모"></textarea>
+                        </div>
+
+                        <!-- 제출 버튼 -->
+                        <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
+                            <input type="submit" value="추가하기">
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 구글맵 도시 -->
+        <div class="content map_page">  
+            <div id="map" style="width: 100%; height: 100%"></div>
+        </div>
+        <script>
+            // 맵을 초기화하고 표시하는 스크립트 부분
+            function initMap() {
+                var mapOptions = {
+                    center: {lat: 37.2703, lng: 126.9884},
+                    zoom: 20,
+                    mapTypeControl: false,
+                    mapTypeId: google.maps.MapTypeId.SATELLITE
+                };
+                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            }
+            // 맵을 초기화하는 함수를 호출합니다.
+            window.onload = function() {
+            initMap();
+            };
+        </script>
+
+    </main>  
+</body>
+</html>
