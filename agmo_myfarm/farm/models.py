@@ -31,19 +31,19 @@ class FarmField(models.Model):
         related_name='field_user')
     
     field_name = models.CharField(blank=True, max_length=255)
-    location = models.PointField() 
+    location = models.CharField(blank=True, max_length=255)
     crop = models.CharField(blank=True, choices=CROP , max_length=225)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것
     
-    weather_date = models.CharField()
-    weather_time = models.CharField()
-    is_rain = models.FloatField()             # 강수 확률(POP)
-    rain_sh = models.CharField()              # 강수 형태(PTY)
-    temperature = models.FloatField()         # 1시간 기온(TMP)
-    humidity = models.FloatField()            # 습 도(REH)
-    wind_direction = models.CharField()       # 풍 향(VEC)
-    wind_speed = models.FloatField()          # 풍 속(WSD)
-    sky_sh = models.CharField()               # 하늘 상태(SKY)
+    weather_date = models.CharField(null=True)
+    weather_time = models.CharField(null=True)
+    is_rain = models.FloatField(null=True)             # 강수 확률(POP)
+    rain_sh = models.CharField(null=True)              # 강수 형태(PTY)
+    temperature = models.FloatField(null=True)         # 1시간 기온(TMP)
+    humidity = models.FloatField(null=True)            # 습 도(REH)
+    wind_direction = models.CharField(null=True)       # 풍 향(VEC)
+    wind_speed = models.FloatField(null=True)          # 풍 속(WSD)
+    sky_sh = models.CharField(null=True)               # 하늘 상태(SKY)
     
     
 

@@ -54,7 +54,7 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
-        default="postgres://postgres:1234@localhost:5432/agmo_myfarm1",
+        default="postgres://postgres:1234@localhost:5432/agmo_data1",
     ),
 }
 # PostgreSQL을 GIS와 함께 사용하도록 엔진 변경

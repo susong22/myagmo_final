@@ -16,6 +16,7 @@
             height: 100vh;
             margin: 0;
             padding: 0;
+            overflow: hidden;
             
         }
         header {
@@ -27,7 +28,11 @@
         }
         
 
-
+        .scrollable-area {
+            
+            overflow-y: auto; /* 세로 스크롤 활성화 */
+            
+        }
         .weather_content {
             display: flex;
             flex-direction: row;
@@ -49,8 +54,8 @@
         }
         .weather_icon {
             position: absolute;
-            top: 140px;
-            left: 20px;
+            top: 130px;
+            left: 30px;
            
             margin: 30px;
             z-index: 1;
@@ -60,11 +65,11 @@
         .temperature {
             position: absolute;
             top: 130px;
-            left: 20px;
+            left: 10px;
            
             margin: 10px;
             z-index: 2;
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 800;
         }
         .weather_etc {
@@ -142,7 +147,7 @@
                 </div>
 
                 <div class="temperature">
-                    <p>{{ wea.temperature }}℃</p>
+                    <p>{{ wea.temperature }}°</p>
                 </div>
 
                 <div class="weather_etc">
@@ -155,39 +160,104 @@
                 </div>
             </div>
             <hr style="margin: 0;">
-            <div class="machine_content">
+            <div class="machine_content scrollable-area">
                 <!-- 탑뷰 -->
                 <div style="display:flex;">
                     <span class="material-symbols-outlined" style="margin-right:5px; margin-left:10px; margin-top:8px; font-size: 40px;">precision_manufacturing</span>
                     <div style="flex:3; font-size: 18px; font-weight: 800; margin-top:15px;">작업기 현황</div>
                     <div style="flex:1;">
                         <a href="{% url 'work:add_work' %}">
-                            <button type="button" class="btn btn-outline-dark" style="margin-top:10px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .3rem; --bs-btn-border-radius: 0rem; border-width:2px; padding-bottom: 5px;">
-                                <div style="font-size: 25px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1;">+</div>
+                            <button type="button" class="btn btn-outline-secondary" style="font-size:0px; margin-top:10px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
+                                <span class="material-symbols-outlined" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 20px;">
+                                    add
+                                </span>
                                 <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px;">작업추가</div>
                             </button> 
                         </a>
                     </div>
                 </div>
                 <!-- 카드뷰 -->
-                <div style="margin-top: 20px; display:flex; justify-content: center;">
-                    <div class="card" style="width: 480px; height: 120px">
-                        <div class="card-body">
-                            <div style="display: flex;">
-                                <span class="material-symbols-outlined" >
-                                    auto_towing
-                                </span>
-                                <span class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px;">
-                                    circle
-                                </span>
-                                <h5 style="position: relative; right: 20px; top:2px; font-weight: 800;">써레</h5>
+                {% if is_work %}
+                    {% for card in work_list %}
+                        <div style="margin-top: 20px; display:flex; justify-content: center;">
+                            <div class="card" style="width: 480px; height: 120px">
+                                <div class="card-body">
+                                    <div>
+                                        <!-- 왼쪽에 정렬되는 요소들 -->
+                                        <div style="display: flex; align-items: center;">
+                                            <!-- 작업기 아이콘 -->
+                                            {% if card.machine_name == '파종기' %}
+                                                <span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">
+                                                    wrist
+                                                </span>
+                                            {% elif card.machine_name == '써레' %}
+                                                <span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">
+                                                    auto_towing
+                                                </span>
+                                            {% elif card.machine_name == '스프레이어' %}
+                                                <span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">
+                                                    sprinkler
+                                                </span>
+                                            {% endif %}
+                                            <!-- 진행률(배경색) -->
+                                            {% if card.machine_name == '파종기' %}
+                                                <span id="progressIcon{{ card.id }}" class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: red; z-index: 1;">
+                                                    clock_loader_90
+                                                </span>
+                                            {% elif card.machine_name == '써레' %}
+                                                <span id="progressIcon{{ card.id }}" class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: blue; z-index: 1;">
+                                                    clock_loader_90
+                                                </span>
+                                            {% elif card.machine_name == '스프레이어' %}
+                                                <span id="progressIcon{{ card.id }}" class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: green; z-index: 1;">
+                                                    clock_loader_90
+                                                </span>
+                                            {% endif %}
+                                            <!-- 테두리 -->
+                                            <span class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 73px; bottom: 7px; z-index: 3;">
+                                                circle
+                                            </span>
+                                            <!-- 작업명 -->
+                                            <h5 style="margin-right: 10px; font-size: 18px; font-weight: 800; position:relative; right:65px; white-space: nowrap;">{{card.machine_name}}</h5>
+                                        </div>
+                                    
+                                        <!-- 오른쪽에 정렬되는 요소들 -->
+                                        <div style="display: flex; justify-content: flex-end; position:relative; bottom:50px;">
+                                            <!-- 와이파이 아이콘 -->
+                                            <span class="material-symbols-outlined" style="margin-left:140px;">
+                                                wifi
+                                            </span>
+                                            <!-- 배터리 아이콘 -->
+                                            <span class="material-symbols-outlined" style="margin-left: 10px; font-size: 30px; transform: scaleX(-1);">
+                                                battery_horiz_075
+                                            </span>
+                                            <!-- 배터리 퍼센트 -->
+                                            <div style="font-size: 14px; margin-left: 3px; margin-top: 5px;">75%</div>
+                                            <!-- 스위치 -->
+                                            <span class="material-symbols-outlined" style="margin-left: 10px; font-size: 40px; position:relative; bottom:5px;">
+                                                toggle_on
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- 상세 내용 -->
+                                    <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 14px; font-weight: 800; position:relative; bottom:40px;">작업시작: 2024/02/08</h6>
+                                    <h7 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 0px; font-size: 14px; font-weight: 800; position:relative; bottom:40px;">작업률: 80%</h7>
+                                    <!-- 작업변경 버튼 -->
+                                    <div style="display: flex; justify-content: end; position:relative; bottom:70px;">
+                                        <a href=#>
+                                            <button type="button" class="btn btn-outline-secondary" style="font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
+                                                <span class="material-symbols-outlined" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 20px;">
+                                                    sync
+                                                </span>
+                                                <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 14px;">작업변경</div>
+                                            </button> 
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 10px;">작업시작: 2024/02/08</h6>
-                            
-
                         </div>
-                    </div>
-                </div>
+                    {% endfor %}
+                {% endif %}
             </div>
 
         </div>

@@ -16,13 +16,13 @@ class Works(TimeStampedModel):
     work_name = models.CharField(blank=True, max_length=255)
     #start_date = models.DateField()
     #end_date = models.DateField()
-    start_date_year = models.CharField()
-    start_date_month = models.CharField()
-    start_date_day = models.CharField()
+    start_date_year = models.CharField(null=True)
+    start_date_month = models.CharField(null=True)
+    start_date_day = models.CharField(null=True)
 
-    end_date_year = models.CharField()
-    end_date_month = models.CharField()
-    end_date_day = models.CharField()
+    end_date_year = models.CharField(null=True)
+    end_date_month = models.CharField(null=True)
+    end_date_day = models.CharField(null=True)
 
     work_fields = models.ForeignKey(
         farm_model.FarmField, 
@@ -41,24 +41,24 @@ class Works(TimeStampedModel):
     machine_name = models.CharField(blank=True, max_length=255)
     contents = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
-    battery = models.IntegerField()
+    battery = models.IntegerField(null=True)
 
-    start_point = models.PointField()
-    end_point = models.PointField()
+    start_point = models.PointField(null=True)
+    end_point = models.PointField(null=True)
     #template에서 클릭 이벤트 생성->해당 좌표값 서버로 전송->전송된 JSON데이터에서 좌표값 추출->
     #모델에 저장(view에서 구현)
     #좌표값은 위경도값으로 저장
     # location = models. (이부분은 api로 맵을 따오거나, 좌표값으로 받아올것)
-
-    expected_path = models.PointField()
+    expected_path = models.PointField(null=True)
     #시작점 끝점을 입력하면 예상 경로를 출력한다
 
-    crop = models.ForeignKey(
-        farm_model.FarmField, 
-        null=True, 
-        on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='farm_farm_crop'
-        )
+    #crop = models.ForeignKey(
+    #    farm_model.FarmField, 
+    #    null=True, 
+    #    on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
+    #    related_name='farm_farm_crop'
+    #    )
+    crop = models.CharField(null=True)
     user_memo = models.TextField(blank=True)
     estimated_hours = models.IntegerField(default=0, help_text='예상 작업시간: 시간')
     estimated_minutes = models.IntegerField(default=0, help_text='예상 작업시간: 분')

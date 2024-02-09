@@ -85,7 +85,7 @@
                             </div>
                             <select class="form-select" name="work_fields" style="width: 200px; height: 30px; padding: 2px;">
                                     {% for farmfield in farmfield_list %}
-                                        <option value="{{ farmfield.pk }}">{{ farmfield.field_name }}</option>
+                                        <option value="{{ farmfield.id }}">{{ farmfield.field_name }}</option>
                                     {% endfor %}
                             </select>
                         </div>

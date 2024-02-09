@@ -1,5 +1,5 @@
 from .models import Works
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -14,19 +14,17 @@ from .models import Works
 from django.utils import timezone
 from .forms import WorkForm
 
-wea = FarmField()
-work1 = Works(work_name = '작업1', machine_name = '써레', start_date_year='2024', start_date_month='02', start_date_day='08')
-work2 = Works(work_name = '작업2', machine_name = '파종', start_date_year='2024', start_date_month='02', start_date_day='09')
-
 
 def main(request):
-    # request.session['wea'] = wea  # 이 객체를 다른 함수에서 사용하기 위해서는 Serializer 필요
     sky_status = {
             '1':"맑음", '3':'구름많음', '4': '흐림'
         }
     rain_status = {
         '0':"없음", '1':"비", '2':"비/눈", '3':"눈", '4':"소나기"
     }
+    color_count = list(range(1, 101))
+    wea = FarmField()
+
     current_datetime = timezone.now()
     current_year = current_datetime.year
     current_month = current_datetime.month
@@ -47,6 +45,11 @@ def main(request):
 
         wea.weather_date = date[0:4] +'년 ' + date[4:6] + '월 ' + date[6:8] + '일'
         wea.weather_time = time
+        #Works.objects.all().delete()
+        #FarmField.objects.all().delete()
+        work_list = Works.objects.all()
+        if work_list is not None:
+            is_work = True
 
         res = requests.get(url, params=para)
         search_request = urllib.request.Request(res.url)
@@ -99,35 +102,39 @@ def main(request):
             
         else:
             print("Error Code:" + rescode)
-        return render(request, 'work/work_main.html', {'wea':wea})
+        
+        content = {
+            'wea':wea,
+            'is_work':is_work,
+            'work_list':work_list,
+            'color_count':color_count,
+        }
+
+        return render(request, 'work/work_main.html', content)
 
 def add_work(request):
-        # wea = request.session.get('wea')
+
         day_list = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
         month_list = [1,2,3,4,5,6,7,8,9,10,11,12]
         year_list = [2024,2025,2026,2027,2028,2029,2030]
-
-
-        farm1 = FarmField(field_name="경작지1")
-        farm2 = FarmField(field_name="경작지2")
+        farm1, farm2 = create_model_instance()
         farmfield_list = [farm1, farm2]
         machine_list = ['써레', '파종기', '스프레이어']
-        crop_list = ['밀', '벼', '콩', '감자']
+        crop_list = ['벼', '콩', '옥수수', '감자']
 
         if request.method == 'GET':
+
             formset = WorkForm()
             content = {
             'day_list' : day_list,
             'month_list' : month_list,
             'year_list' : year_list,
-            'farm1' : farm1,
-            'farm2' : farm2,
             'farmfield_list' : farmfield_list,
             'machine_list' : machine_list,
             'crop_list' : crop_list,
             'formset': formset,
-            'wea':wea,
             }
+
             return render(request, 'work/add_work.html', content)
             
 
@@ -135,7 +142,9 @@ def add_work(request):
             formset = WorkForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                render(request, 'work/work_main.html', {'wea':wea})
+                render(request, 'work/work_main.html')
+                print('폼이 저장되었습니다!')
+                return redirect('work:main')
             else:
                 print(formset.errors)
                 print(request.POST)
@@ -146,13 +155,10 @@ def add_work(request):
             'day_list' : day_list,
             'month_list' : month_list,
             'year_list' : year_list,
-            'farm1' : farm1,
-            'farm2' : farm2,
             'farmfield_list' : farmfield_list,
             'machine_list' : machine_list,
             'crop_list' : crop_list,
             'formset': formset,
-            'wea':wea,
             }
 
         return render(request, 'work/add_work.html', content)
@@ -185,7 +191,20 @@ def get_expected_path(request):
 
     return render(request, 'work/work_main.html', {'json_expected_path':json_expected_path})
 
+
 def add_machine_card(request):
     if request.method == 'GET':
         for obj in Works.objects.all():
             pass
+
+def create_model_instance():
+    # 새로운 모델 인스턴스 생성
+    farm_sample1 = FarmField(field_name = '경작지1')
+    farm_sample2 = FarmField(field_name = '경작지3')  # 날씨 저장용 모델
+
+
+    # 데이터베이스에 저장 (이 시점에서 id가 할당됨)
+    farm_sample1.save()
+    farm_sample2.save()
+
+    return farm_sample1, farm_sample2
