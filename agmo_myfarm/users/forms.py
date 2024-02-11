@@ -1,3 +1,4 @@
+from django import forms as django_form
 from django.contrib.auth import get_user_model, forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -33,24 +34,28 @@ class UserCreationForm(forms.UserCreationForm):
         
         raise ValidationError(self.error_messages["duplicated_username"])
     
-AREA = [
-        ('Seoul', '서울'),
-        ('Suwon', '수원'),
-        # 다른 선택지 추가 가능
-        ]
+
 
 class SignupForm(django_form.ModelForm):
     class Meta:
         model = User
         fields = ['username','password','name','phone_number','email','area']
-        area = django_form.ChoiceField(choices=AREA, required=True, label='지역')
+        
+        AREA = [
+        ('Seoul', '서울'),
+        ('Suwon', '수원'),
+        # 다른 선택지 추가 가능
+        ]
+  
         labels = {
             'username': 'id',
             'password': 'password',
             'name': '이름',
             'phone_number': '전화번호',
             'email': 'email',
+			'area': '지역'
         }
+        area = django_form.ChoiceField(choices=AREA, required=True)
 
         widgets = {
             'password': django_form.PasswordInput(),

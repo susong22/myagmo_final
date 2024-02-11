@@ -45,6 +45,8 @@ class FarmField(models.Model):
     wind_speed = models.FloatField(null=True)          # 풍 속(WSD)
     sky_sh = models.CharField(null=True)               # 하늘 상태(SKY)
     
+    user_memo = models.TextField(blank=True, null=True)
+    is_selected = models.BooleanField(default=False)
     
 
     class Meta:

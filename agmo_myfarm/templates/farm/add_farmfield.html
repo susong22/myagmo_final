@@ -24,7 +24,7 @@
             display: flex;
             flex: 1;
         }
-        .machine_page {
+        .farmfield_page {
             background-color: #f9f5f5;
             flex: 1;
         }
@@ -43,12 +43,12 @@
     
     <header>
         <!-- 헤더 고정 -->
-        {% include 'work/header.html' %}
+        {% include 'work/header.html' with content=farm_list %}
     </header>
 
     <main>
 
-        <div class="machine_page">
+        <div class="farmfield_page">
             <div class="card border-secondary mb-3" style="max-width: 30rem; height: 36rem; margin: 10px; border: none;">
                 
                 <div class="card-header" style="font-size: 20px; font-weight: bold; display: flex;">
@@ -69,28 +69,15 @@
                 </div>
 
                 <div class="card-body text-secondary">
-                    <form action="{% url 'work:add_work' %}" method="post">
+                    <form action="{% url 'farm:add_farmfield' %}" method="post" id="yourForm">
                         {% csrf_token %}
                         {{ formset.management_form }}
                         
                         <!--  경작지 이름 설정  -->
                         <div class="input-group mb-3" style="margin-top: 10px;">
-                            <input type="text" name="work_name" class="form-control border-bottom" placeholder="경작지 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
+                            <input type="text" name="field_name" class="form-control border-bottom" placeholder="경작지 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
                         </div>
-
-                        
-
-                        <!--  작물 종류(crop)  -->
-                        <div style="display: flex; margin-top: 20px; margin-left: 10px; color:black; font-weight: 800;">
-                            <div style="margin-right: 62px;">
-                                작물 종류
-                            </div>
-                            <select class="form-select" name="crop" style="width: 200px; height: 30px; padding: 2px">
-                                    {% for crop in crop_list %}
-                                        <option value="{{ crop }}">{{ crop }}</option>
-                                    {% endfor %}
-                            </select>
-                        </div>
+                 
 
                         <!--  위치 설정  -->
                         <div style="display: flex; margin-top: 20px; margin-left: 10px; color:black; font-weight: 800;">
@@ -112,12 +99,10 @@
                         </div>
 
                         <!-- 제출 버튼 -->
-                        <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
-                            <input type="submit" value="추가하기">
-                        </div>
+                            <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
+                                <input type="submit" value="추가하기">
+                            </div>
                     </form>
-
-
                 </div>
             </div>
         </div>
@@ -141,6 +126,13 @@
             window.onload = function() {
             initMap();
             };
+
+            document.getElementById('yourForm').addEventListener('submit', function(event) {
+              // 기본 동작(폼 제출)을 막음
+
+            // 여기에 원하는 alert 내용을 작성
+            alert("경작지가 성공적으로 추가되었습니다.");
+            });
         </script>
 
     </main>  

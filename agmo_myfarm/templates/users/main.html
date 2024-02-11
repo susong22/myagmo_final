@@ -34,13 +34,24 @@
     }
     a{
         color:black;
+        width:200px
+    }
+    .button {
+    padding: 8px 20px;
+    width:271px;
+    background-color: #eaecef;
+    color: #274131;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
     }
 </style>
 </head>
 
 
 <body>
-    <div class="body"> 
+    <div> 
         <img style="height: 49px;margin-top:74px;margin-left:141px;" src="https://agmo.farm/assets/images/logo-white.svg">
     </div>
     <div style="justify-content: flex-start;">
@@ -49,7 +60,8 @@
             <input type="input" name="username" placeholder="username">
             <input type="password" name="password" placeholder="password">
             <input type="submit" value="Login">
-            <a href="{https://www.agmo.farm/}">https://www.agmo.farm/</a>
+            <a href="{% url 'users:signup' %}" class="button">Sign up</a>
+            <a href="{https://www.agmo.farm/}">아그모 홈페이지</a>
         </form> 
         
     </div>

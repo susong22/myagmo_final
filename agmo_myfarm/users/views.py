@@ -17,6 +17,10 @@ def main(request):
         else:
             return render(request, 'users/main.html', {'error_message': '로그인에 실패했습니다.'})
         
+def my_view(request):
+    form = SignupForm()
+    return render(request, 'signup.html', {'form': form})
+        
 def signup(request):
     if request.method == "GET":
         form = SignupForm()

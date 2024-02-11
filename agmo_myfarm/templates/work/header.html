@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -11,7 +12,7 @@
     <!-- Bootstrap CSS부분-->
     <title>main</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> 
-  </head>
+  </head> 
 
   <style>
       .navbar-nav .nav-link {/* 홈같은 링크 색상 지정 */
@@ -26,6 +27,11 @@
       .navbar-nav .nav-item {
           margin-right: 40px; /* 링크들 사이의 거리 */
      }
+     .button-container {
+      display: flex;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
         
   </style>
 
@@ -56,22 +62,55 @@
     </nav>
       <!--네비게이션 바 끝-->
 
-      <!--검색창-->
-    <nav class="navbar bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="padding-bottom:0;">
       <div class="container-fluid">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="경작지" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit" style="width: 69px">검색</button>
-        </form>
-        <a href="{% url 'farm:add_farmfield' %}" style="margin-right: 1140px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16"  style="color:#69746e;">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-          </svg>
+        <div class="button-container" id="buttonContainer">
+          <!-- 경작지 표시 -->
+          {% for farm in content|dictsort:"id" %}
+            {% if farm.is_selected %}
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-success field-button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+            {% else %}      
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-outline-success field_button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+            {% endif %}
+          {% endfor %}
+  
+        </div>
+          <!-- 경작지 추가 버튼 -->
+        <a href="{% url 'farm:add_farmfield' %}" style="margin-right: 10px; margin-left:30px; margin-bottom: 10px; white-space: nowrap;">
+          <button type="button" class="btn btn-outline-secondary" style="--bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.3rem; border-width:2px; padding-bottom: 2px; padding-top: 2px;">
+            <div style=" display: flex; align-items: center;"> 
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4z"/>
+              </svg>           
+              <div style="font-weight: 800;">경작지 추가</div> 
+            </div>
+          </button>
         </a>
+    
+
+        <!--검색창-->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: end; position:relative; bottom:5px;">
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="경작지 검색" aria-label="경작지 검색">
+            <button class="btn btn-outline-success" type="submit" style="white-space: nowrap;">검색</button>
+          </form>
+
+        </div>
       </div>
     </nav>
-  
+    <script type="text/javascript" src="{% static 'js/field.js' %}"></script>
+    <script>
+      var buttonContainer = document.getElementById('buttonContainer');
+    
+      // 마우스 휠 이벤트 리스너 등록
+      buttonContainer.addEventListener('wheel', function (event) {
+        // event.deltaX 값에 따라 좌우로 스크롤
+        buttonContainer.scrollLeft += 0.1*event.deltaY;
+        // 이벤트 전파 중지
+        event.preventDefault();
+      });
+    </script>
   </body>
 
 </html>

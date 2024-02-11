@@ -43,7 +43,7 @@
     
     <header>
         <!-- 헤더 고정 -->
-        {% include 'work/header.html' %}
+        {% include 'work/header.html' with content=farm_list %}
     </header>
 
     <main>
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="card-body text-secondary">
-                    <form action="{% url 'work:add_work' %}" method="post">
+                    <form action="{% url 'work:add_work' %}" method="post" id="yourForm">
                         {% csrf_token %}
                         {{ formset.management_form }}
                         
@@ -207,7 +207,7 @@
 
                         <!-- 제출 버튼 -->
                         <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
-                            <input type="submit" value="추가하기">
+                            <input type="submit" value="추가하기" id="submitButton">
                         </div>
                     </form>
 
@@ -235,6 +235,13 @@
             window.onload = function() {
             initMap();
             };
+
+            document.getElementById('yourForm').addEventListener('submit', function(event) {
+              // 기본 동작(폼 제출)을 막음
+
+            // 여기에 원하는 alert 내용을 작성
+            alert("작업이 성공적으로 추가되었습니다.");
+            });
         </script>
 
     </main>  

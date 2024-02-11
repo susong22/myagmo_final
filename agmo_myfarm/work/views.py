@@ -22,8 +22,7 @@ def main(request):
     rain_status = {
         '0':"없음", '1':"비", '2':"비/눈", '3':"눈", '4':"소나기"
     }
-    color_count = list(range(1, 101))
-    wea = FarmField()
+
 
     current_datetime = timezone.now()
     current_year = current_datetime.year
@@ -31,94 +30,102 @@ def main(request):
     current_day = current_datetime.day
 
     if request.method == 'GET':
-        url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
-        key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
-        #date = '20240207'      # 20240203
-        date = str(current_year) + str(current_month).zfill(2) + str(current_day).zfill(2)
-        time = '0500'      # 0200부터 3시간 단위
-        place = [55, 127]   # 위도, 경도    <- 다른 def 에서 불러와야함
-
-        para = {
-            'serviceKey':key, 'pageNo':'1', 'numOfRows':'20', 'dataType':'json', 
-            'base_date':date, 'base_time':time, 'nx':place[0], 'ny':place[1]
-        }
-
-        wea.weather_date = date[0:4] +'년 ' + date[4:6] + '월 ' + date[6:8] + '일'
-        wea.weather_time = time
+        farm_list = FarmField.objects.all()
         #Works.objects.all().delete()
         #FarmField.objects.all().delete()
-        work_list = Works.objects.all()
-        if work_list is not None:
-            is_work = True
+        if FarmField.objects.exists():
+            wea = FarmField.objects.filter(is_selected=True)
+            url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
+            key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
+            #date = '20240207'      # 20240203
+            date = str(current_year) + str(current_month).zfill(2) + str(current_day).zfill(2)
+            time = '0500'      # 0200부터 3시간 단위
+            place = [55, 127]   # 위도, 경도    <- 다른 def 에서 불러와야함
 
-        res = requests.get(url, params=para)
-        search_request = urllib.request.Request(res.url)
-        new_url = res.url
-        response = urllib.request.urlopen(search_request)
-        rescode = response.getcode()
-        if rescode==200:
-            response_body = response.read()
-            result = json.loads(response_body.decode('UTF-8'))
-            items = result["response"]['body']['items']['item']
-            for i in items:
-                if i['category'] == 'POP':    # 강수확률
-                    wea.is_rain = i['fcstValue']
-                elif i['category'] == 'PTY':    # 강수형태
-                    rain_key = i['fcstValue']
-                    wea.rain_sh = rain_status[rain_key]
-                elif i['category'] == 'TMP':    # 기온
-                    wea.temperature = i['fcstValue']
-                elif i['category'] == 'REH':   # 습도
-                    wea.humidity = i['fcstValue']
-                elif i['category'] == 'VEC':   # 풍향
-                    float_value = float(i['fcstValue'])
-                    if 337.5 < float_value or float_value <= 22.5:
-                        wea.wind_direction = '북풍'
-                    elif 22.5 < float_value <= 67.5:
-                        wea.wind_direction = '북동풍'
-                    elif 67.5 < float_value <= 112.5:
-                        wea.wind_direction = '동풍'
-                    elif 112.5 < float_value <= 157.5:
-                        wea.wind_direction = '남동풍'
-                    elif 157.5 < float_value <= 202.5:
-                        wea.wind_direction = '남풍'
-                    elif 202.5 < float_value <= 247.5:
-                        wea.wind_direction = '남서풍'
-                    elif 247.5 < float_value <= 292.5:
-                        wea.wind_direction = '서풍'
+            para = {
+                'serviceKey':key, 'pageNo':'1', 'numOfRows':'20', 'dataType':'json', 
+                'base_date':date, 'base_time':time, 'nx':place[0], 'ny':place[1]
+            }
+
+            wea.weather_date = date[0:4] +'년 ' + date[4:6] + '월 ' + date[6:8] + '일'
+            wea.weather_time = time
+            work_list = Works.objects.all()
+            if Works.objects.exists():
+                is_work = True
+            else:
+                is_work = False
+            
+
+            res = requests.get(url, params=para)
+            search_request = urllib.request.Request(res.url)
+            new_url = res.url
+            response = urllib.request.urlopen(search_request)
+            rescode = response.getcode()
+            if rescode==200:
+                response_body = response.read()
+                result = json.loads(response_body.decode('UTF-8'))
+                items = result["response"]['body']['items']['item']
+                for i in items:
+                    if i['category'] == 'POP':    # 강수확률
+                        wea.is_rain = i['fcstValue']
+                    elif i['category'] == 'PTY':    # 강수형태
+                        rain_key = i['fcstValue']
+                        wea.rain_sh = rain_status[rain_key]
+                    elif i['category'] == 'TMP':    # 기온
+                        wea.temperature = i['fcstValue']
+                    elif i['category'] == 'REH':   # 습도
+                        wea.humidity = i['fcstValue']
+                    elif i['category'] == 'VEC':   # 풍향
+                        float_value = float(i['fcstValue'])
+                        if 337.5 < float_value or float_value <= 22.5:
+                            wea.wind_direction = '북풍'
+                        elif 22.5 < float_value <= 67.5:
+                            wea.wind_direction = '북동풍'
+                        elif 67.5 < float_value <= 112.5:
+                            wea.wind_direction = '동풍'
+                        elif 112.5 < float_value <= 157.5:
+                            wea.wind_direction = '남동풍'
+                        elif 157.5 < float_value <= 202.5:
+                            wea.wind_direction = '남풍'
+                        elif 202.5 < float_value <= 247.5:
+                            wea.wind_direction = '남서풍'
+                        elif 247.5 < float_value <= 292.5:
+                            wea.wind_direction = '서풍'
+                        else:
+                            wea.wind_direction = '북서풍'
+
+                    elif i['category'] == 'WSD':   # 풍속
+                        wea.wind_speed = i['fcstValue']
+                    elif i['category'] == 'SKY':   # 하늘상태
+                        sky_key = i['fcstValue']
+                        wea.sky_sh = sky_status[sky_key]
                     else:
-                        wea.wind_direction = '북서풍'
+                        pass
 
-                elif i['category'] == 'WSD':   # 풍속
-                    wea.wind_speed = i['fcstValue']
-                elif i['category'] == 'SKY':   # 하늘상태
-                    sky_key = i['fcstValue']
-                    wea.sky_sh = sky_status[sky_key]
-                else:
-                    pass
+                # 실제 구현에서는 이 정보들이 모두 채워져야지만 서치를 그만두도록 알고리즘 구성
+                
+                
+            else:
+                print("Error Code:" + rescode)
+            
+            content = {
+                'wea':wea,
+                'is_work':is_work,
+                'work_list':work_list,
 
-            # 실제 구현에서는 이 정보들이 모두 채워져야지만 서치를 그만두도록 알고리즘 구성
-            
-            
+                'farm_list': farm_list,
+            }
+
+            return render(request, 'work/work_main.html', content)
         else:
-            print("Error Code:" + rescode)
-        
-        content = {
-            'wea':wea,
-            'is_work':is_work,
-            'work_list':work_list,
-            'color_count':color_count,
-        }
-
-        return render(request, 'work/work_main.html', content)
+            return render(request, 'work/empty.html')
 
 def add_work(request):
-
+        farm_list = FarmField.objects.all()
         day_list = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
         month_list = [1,2,3,4,5,6,7,8,9,10,11,12]
         year_list = [2024,2025,2026,2027,2028,2029,2030]
-        farm1, farm2 = create_model_instance()
-        farmfield_list = [farm1, farm2]
+        farmfield_list = FarmField.objects.all()
         machine_list = ['써레', '파종기', '스프레이어']
         crop_list = ['벼', '콩', '옥수수', '감자']
 
@@ -133,6 +140,7 @@ def add_work(request):
             'machine_list' : machine_list,
             'crop_list' : crop_list,
             'formset': formset,
+            'farm_list': farm_list,
             }
 
             return render(request, 'work/add_work.html', content)
@@ -143,7 +151,7 @@ def add_work(request):
             if formset.is_valid():
                 formset.save()
                 render(request, 'work/work_main.html')
-                print('폼이 저장되었습니다!')
+                print('add_work 폼이 저장되었습니다!')
                 return redirect('work:main')
             else:
                 print(formset.errors)
@@ -190,21 +198,3 @@ def get_expected_path(request):
     print(json.dumps(expected_path_lonlat))
 
     return render(request, 'work/work_main.html', {'json_expected_path':json_expected_path})
-
-
-def add_machine_card(request):
-    if request.method == 'GET':
-        for obj in Works.objects.all():
-            pass
-
-def create_model_instance():
-    # 새로운 모델 인스턴스 생성
-    farm_sample1 = FarmField(field_name = '경작지1')
-    farm_sample2 = FarmField(field_name = '경작지3')  # 날씨 저장용 모델
-
-
-    # 데이터베이스에 저장 (이 시점에서 id가 할당됨)
-    farm_sample1.save()
-    farm_sample2.save()
-
-    return farm_sample1, farm_sample2
