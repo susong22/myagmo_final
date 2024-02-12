@@ -11,27 +11,30 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 class Tracking(TimeStampedModel):
-    track_work_name = models.ForeignKey(
-        work_model.Works, 
-        null=True, 
-        on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='tracking_work_work_name'
-        )
-    #작업명을 work의 Wokrs에서 받아온다
+    # track_work_name = models.ForeignKey(
+    #     work_model.Works, 
+    #     null=True, 
+    #     on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
+    #     related_name='tracking_work_work_name'
+    #     )
+    # #작업명을 work의 Wokrs에서 받아온다
 
-    track_expected_path = models.ForeignKey(
-        work_model.Works, 
-        null=True, 
-        on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
-        related_name='tracking_work_expected_path'
-        )
+    # track_expected_path = models.ForeignKey(
+    #     work_model.Works, 
+    #     null=True, 
+    #     on_delete=models.CASCADE, #외래키 갖는 유저 삭제시
+    #     related_name='tracking_work_expected_path'
+    #     )
     #예상 경로를 work의 Works에서 받아온다
 
     current_point = models.PointField(blank=True, null=True)
 
     #실시간 좌표값을 전송받는다 해당 로직은 다시 구성필요
 
-    traveled_path = models.PointField(blank=True, null=True)
+    traveled_path = models.MultiPointField(blank=True, null=True)
+    start_point_t = models.PointField(blank=True, null=True)
+    end_point_t = models.PointField(blank=True, null=True)
+    markers = models.MultiPointField(blank=True, null=True)
 
     def __str__(self):
         return f'Coordinates: {self.traveled_path.x}, {self.traveled_path.y}'
@@ -39,16 +42,16 @@ class Tracking(TimeStampedModel):
     #받아올 예정이라면 PostGIS 등을 이용하는 것이 좋다.
     #실시간 서버통신이 힘들 것 같다면 수기로 입력하는 방법도 고려해볼 것.
 
-    roll = models.FloatField()
-    pitch = models.FloatField()
+    roll = models.FloatField(blank=True, null=True)
+    pitch = models.FloatField(blank=True, null=True)
 
-    height = models.FloatField()
+    height = models.FloatField(blank=True, null=True)
     
     class Meta:
         app_label = 'tracking'
 
 class Progress(TimeStampedModel):
-    progress = models.FloatField()
+    progress = models.FloatField(blank=True, null=True)
     #진행률 계산은 view에서 맡을 것
 
     class Meta:

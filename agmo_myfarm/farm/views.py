@@ -6,6 +6,10 @@ from .forms import FarmForm
 from farm.models import FarmField
 from . import models
 from django.http import JsonResponse
+import json
+from tracking.models import Tracking
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import MultiPoint
 
 
 def add_farmfield(request):
@@ -20,6 +24,7 @@ def add_farmfield(request):
     
     if request.method == 'POST':
             formset = FarmForm(request.POST)
+
             if formset.is_valid():
                 for item in FarmField.objects.all():
                     item.is_selected = False
@@ -50,11 +55,33 @@ def field_select(request, farm_id):
             for item in FarmField.objects.all():
                 item.is_selected = False
                 item.save()   
-                response_body["result"] = "change"
-    
+            response_body["result"] = "change"
+                
             farm.is_selected = True
             farm.save()
+            
         
         return JsonResponse(status=200, data=response_body)
-    
-               
+
+def save_markers(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        x_sum = 0
+        x_count = 0
+        y_sum = 0
+        y_count = 0
+        marker_coordinates = data.get('markers', [])
+        print(marker_coordinates)
+        for coordinate in marker_coordinates:
+            x_sum += coordinate['lng']
+            x_count += 1
+            y_sum += coordinate['lat']
+            y_count += 1
+
+        point = [GEOSGeometry(f"POINT({x_sum/x_count} {y_sum/y_count})")]
+        print(point)
+
+
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False})

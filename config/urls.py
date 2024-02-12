@@ -15,6 +15,7 @@ urlpatterns = [
     path("home/", include('home.urls', namespace="home")),
     path("work/", include('work.urls', namespace="work")),
     path("work/farm/", include('farm.urls', namespace="farm")),
+    path("tracking/", include('tracking.urls', namespace="tracking")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

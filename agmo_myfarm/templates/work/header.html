@@ -70,7 +70,7 @@
             {% if farm.is_selected %}
               <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-success field-button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
             {% else %}      
-              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-outline-success field_button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-outline-success field-button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
             {% endif %}
           {% endfor %}
   

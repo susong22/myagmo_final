@@ -10,6 +10,6 @@ class FarmForm(django_forms.ModelForm):
         model = FarmField
         fields=['field_name', 
                 'crop',
-                'user_memo'
+                'user_memo',
         ]
 

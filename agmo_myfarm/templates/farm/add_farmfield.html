@@ -1,8 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add_work Page</title>
@@ -69,7 +74,7 @@
                 </div>
 
                 <div class="card-body text-secondary">
-                    <form action="{% url 'farm:add_farmfield' %}" method="post" id="yourForm">
+                    <form id="addFieldForm" action="{% url 'farm:add_farmfield' %}" method="post">
                         {% csrf_token %}
                         {{ formset.management_form }}
                         
@@ -77,19 +82,37 @@
                         <div class="input-group mb-3" style="margin-top: 10px;">
                             <input type="text" name="field_name" class="form-control border-bottom" placeholder="경작지 이름을 입력하세요" aria-label="작업 이름을 입력하세요" aria-describedby="basic-addon1" style="border:none;">
                         </div>
-                 
 
-                        <!--  위치 설정  -->
+                        <!--  지역 찾기  -->
                         <div style="display: flex; margin-top: 20px; margin-left: 10px; color:black; font-weight: 800;">
-                            <div style="margin-right: 222px;">
+                            <div style="margin-right: 10px;">
                                 위치 설정
                             </div>
-                            <a href="{% url 'farm:add_farmfield' %}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                            <form class="d-flex" role="search" id="searchForm">
+                                <input class="form-control" type="search" placeholder="지역을 입력하세요" aria-label="Search" id="searchInput">
+                                <button class="btn btn-outline-secondary" type="submit" style="white-space: nowrap;">검색</button>
+                            </form>
+                            <button type="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!--  경계 설정  -->
+                        <div style="display: flex; margin-top: 30px; margin-left: 10px; color:black; font-weight: 800;">
+                            <div style="margin-right: 10px;">
+                                경계 설정
+                            </div>
+                            <div style="font-weight: 100; color:#8f8787; margin-top: 10px; margin-right:40px; margin-left:10px; white-space: nowrap;">
+                                &nbsp;&nbsp;경작지의 꼭짓점에 표시해주세요&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </div>
+                            <button type="button" id="addMarker">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
                                     <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
                                     <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                   </svg>
-                            </a>
+                            </button>
                         </div>
 
 
@@ -99,9 +122,9 @@
                         </div>
 
                         <!-- 제출 버튼 -->
-                            <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
-                                <input type="submit" value="추가하기">
-                            </div>
+                        <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
+                            <button type="button" id="subMarker">추가하기</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -111,30 +134,41 @@
         <div class="content map_page">  
             <div id="map" style="width: 100%; height: 100%"></div>
         </div>
-        <script>
-            // 맵을 초기화하고 표시하는 스크립트 부분
-            function initMap() {
-                var mapOptions = {
-                    center: {lat: 37.2703, lng: 126.9884},
-                    zoom: 20,
-                    mapTypeControl: false,
-                    mapTypeId: google.maps.MapTypeId.SATELLITE
-                };
-                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            }
-            // 맵을 초기화하는 함수를 호출합니다.
-            window.onload = function() {
-            initMap();
-            };
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // 폼 제출 기본 동작 방지
 
-            document.getElementById('yourForm').addEventListener('submit', function(event) {
-              // 기본 동작(폼 제출)을 막음
+            var searchInput = document.getElementById('searchInput').value;
 
-            // 여기에 원하는 alert 내용을 작성
-            alert("경작지가 성공적으로 추가되었습니다.");
+            // 주소를 좌표로 변환하는 Geocoder 객체 생성
+            var geocoder = new google.maps.Geocoder();
+            
+            // 주소를 좌표로 변환
+            geocoder.geocode({ 'address': searchInput }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var location = results[0].geometry.location;
+                    showMap(location);
+                } else {
+                    console.error('지역을 찾을 수 없습니다. 오류: ' + status);
+                }
             });
-        </script>
+        });
 
+        // 지도에 좌표를 표시하는 함수
+        function showMap(location) {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: location,
+                zoom: 15
+            });
+
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: '검색된 위치'
+            });
+        }
+    </script>
+    <script type="text/javascript" src="{% static 'js/add_field.js' %}"></script>
     </main>  
 </body>
 </html>

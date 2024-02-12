@@ -31,7 +31,7 @@ class FarmField(models.Model):
         related_name='field_user')
     
     field_name = models.CharField(blank=True, max_length=255)
-    location = models.CharField(blank=True, max_length=255)
+    location = models.JSONField(null=True)
     crop = models.CharField(blank=True, choices=CROP , max_length=225)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것
     
