@@ -1,15 +1,17 @@
 # agmo_myfarm
 
-Behold My Awesome Project!
+농민을 위한 종합 자율주행 웹 서비스 농작이 
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 License: MIT
 
-## Settings
+## 개발환경
 
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
+framework: Django
+언어: Python
+OS: Windows
 
 ## Basic Commands
 
