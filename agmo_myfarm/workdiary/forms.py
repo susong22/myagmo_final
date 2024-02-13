@@ -1,15 +1,16 @@
 # workdiary/forms.py
 from django import forms
 from .models import WorkDiary
+from django.utils import timezone
 
 class WorkDiaryForm(forms.ModelForm):
     class Meta:
         model = WorkDiary
-        fields = ['selected_date', 'work']
+        fields = ['selected_date', 'workdiary_work_detail']
         widgets = {
             'selected_date': forms.DateInput(attrs={'type': 'date'}),
         }
-def __init__(self, *args, **kwargs):
-        super(WorkDiaryForm, self).__init__(*args, **kwargs)
-        # selected_date 필드의 기본값을 오늘 날짜로 설정
-        self.fields['selected_date'].initial = timezone.now().date()
+        def __init__(self, *args, **kwargs): 
+            super(WorkDiaryForm, self).__init__(*args, **kwargs)
+            # selected_date 필드의 기본값을 오늘 날짜로 설정
+            self.fields['selected_date'].initial = timezone.now().date()

@@ -1,0 +1,135 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <!-- 필요한 meta tags 첨부하는 곳-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+    rel="stylesheet">
+    <!-- Bootstrap CSS부분-->
+    <title>main</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> 
+  </head> 
+
+  <style>
+      .navbar-nav .nav-link {/* 홈같은 링크 색상 지정 */
+          color: white;
+      }
+      .navbar img {
+          margin-right: 60px; /* 이미지와 홈 화면의 간격 필요에 따라 조절하세요 */
+      }
+      .navbar-custom {
+          background-color: #274131; /* 내비게이션 바 색상 */
+      }
+      .navbar-nav .nav-item {
+          margin-right: 40px; /* 링크들 사이의 거리 */
+     }
+     .button-container {
+      display: flex;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+        
+  </style>
+
+
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <!-- 네비게이션 바 색깔  -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+      <div class="container-fluid">
+        <img style="height: 30px;" src="https://agmo.farm/assets/images/logo-white.svg">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="#">홈</a>
+            </li>
+            <li class="nav-item">
+             <a class="nav-link" href="#">경작지</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">작업일지</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">요약</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+      <!--네비게이션 바 끝-->
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="padding-bottom:0;">
+      
+        <div class="button-container" id="buttonContainer">
+          <!-- 경작지 표시 -->
+          {% for farm in content|dictsort:"id" %}
+            {% if farm.is_selected %}
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-success field-button" style="margin-left: 10px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+            {% else %}      
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-outline-success field-button" style="margin-left: 10px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+            {% endif %}
+          {% endfor %}
+  
+        </div>
+          <!-- 경작지 추가 버튼 -->
+        <a href="{% url 'farm:add_farmfield' %}" style="margin-right: 10px; margin-left:30px; margin-bottom: 10px; white-space: nowrap;">
+          <button type="button" class="btn btn-outline-secondary" style="--bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.3rem; border-width:2px; padding-bottom: 2px; padding-top: 2px;">
+            <div style=" display: flex; align-items: center;"> 
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4z"/>
+              </svg>           
+              <div style="font-weight: 800;">경작지 추가</div> 
+            </div>
+          </button>
+        </a>
+      
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: end; position:relative; right:5px;">
+        <!-- 경작지 제거 버튼 -->
+        <a href="{% url 'farm:delete_farmfield' %}" style="position:relative; bottom:5px; white-space: nowrap;">
+          <button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.3rem; border-width:2px; padding-bottom: 2px; padding-top: 2px; margin-right: 10px;">
+            <div style=" display: flex; align-items: center;"> 
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-bookmark-x" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M6.146 5.146a.5.5 0 0 1 .708 0L8 6.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 7l1.147 1.146a.5.5 0 0 1-.708.708L8 7.707 6.854 8.854a.5.5 0 1 1-.708-.708L7.293 7 6.146 5.854a.5.5 0 0 1 0-.708z"/>
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+              </svg>         
+              <div style="font-weight: 800;">경작지 제거</div> 
+            </div>
+          </button>
+        </a>
+
+
+        <!--검색창-->
+        <div class="d-flex" style="width:300px; position: relative; bottom: 5px;">
+
+            <div class="input-group mb-3" style="position: relative; top: 8px;">
+              <input type="text" class="form-control" id="searchInput" placeholder="경작지 검색" aria-label="경작지 검색">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" id="searchButton" aria-expanded="false">검색</button>
+              <ul class="dropdown-menu dropdown-menu-end" id="searchResults">
+                <!-- 검색 결과가 여기에 추가될 것입니다. -->
+              </ul>
+            </div>
+         
+        </div>
+      </div>
+    </nav>
+    <script type="text/javascript" src="{% static 'js/field.js' %}"></script>
+    <script>
+      var buttonContainer = document.getElementById('buttonContainer');
+    
+      // 마우스 휠 이벤트 리스너 등록
+      buttonContainer.addEventListener('wheel', function (event) {
+        // event.deltaX 값에 따라 좌우로 스크롤
+        buttonContainer.scrollLeft += 0.1*event.deltaY;
+        // 이벤트 전파 중지
+        event.preventDefault();
+      });
+    </script>
+  </body>
+
+</html>
