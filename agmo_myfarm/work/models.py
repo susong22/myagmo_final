@@ -43,6 +43,7 @@ class Works(TimeStampedModel):
     is_active = models.BooleanField(default=True)
     battery = models.IntegerField(null=True)
 
+
     start_point = models.PointField(null=True)
     end_point = models.PointField(null=True)
     #template에서 클릭 이벤트 생성->해당 좌표값 서버로 전송->전송된 JSON데이터에서 좌표값 추출->

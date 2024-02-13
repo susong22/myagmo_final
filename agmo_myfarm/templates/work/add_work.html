@@ -1,8 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add_work Page</title>
@@ -48,7 +53,7 @@
 
     <main>
 
-        <div class="machine_page">
+        <div class="machine_page" id="yourFormContainer">
             <div class="card border-secondary mb-3" style="max-width: 30rem; height: 36rem; margin: 10px; border: none;">
                 
                 <div class="card-header" style="font-size: 20px; font-weight: bold; display: flex;">
@@ -187,27 +192,38 @@
                         </div>
 
                         <!--  경로 설정  -->
-                        <div style="display: flex; margin-top: 20px; margin-left: 10px; color:black; font-weight: 800;">
-                            <div style="margin-right: 222px;">
+                        <div style="display: flex; margin-top: 30px; margin-left: 10px; color:black; font-weight: 800;">
+                            <div style="margin-right: 10px; white-space: nowrap;">
                                 경로 설정
                             </div>
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
-                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                  </svg>
+                            <div style="font-weight: 100; color:#8f8787; margin-top: 10px; margin-right:10px; margin-left:10px; white-space: nowrap;">
+                                &nbsp;&nbsp;시작점 설정
                             </div>
+                            <button class="btn btn-outline-secondary" type="button" id="create_startpoint_button" style="color:red">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                  </svg>
+                            </button>
+
+                            <div style="font-weight: 100; color:#8f8787; margin-top: 10px; margin-right:10px; margin-left:10px; white-space: nowrap;">
+                                &nbsp;&nbsp;종료점 설정
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="create_endpoint_button" style="color:blue">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                  </svg>
+                            </button> 
                         </div>
 
 
                         <!-- 상세 메모 -->
-                        <div class="input-group" style="margin-top: 30px;">
+                        <div class="input-group" style="margin-top: 15px;">
                             <textarea class="form-control" name="user_memo" aria-label="With textarea" style="resize: none; height: 100px;"  placeholder="상세 메모"></textarea>
                         </div>
 
                         <!-- 제출 버튼 -->
                         <div style="display: flex; justify-content:flex-end; margin-top: 10px;">
-                            <input type="submit" value="추가하기" id="submitButton">
+                            <input type="button" value="추가하기" id="save_button">
                         </div>
                     </form>
 
@@ -227,7 +243,7 @@
                     center: {lat: 37.2703, lng: 126.9884},
                     zoom: 20,
                     mapTypeControl: false,
-                    mapTypeId: google.maps.MapTypeId.SATELLITE
+                    mapTypeId: google.maps.MapTypeId.HYBRID,
                 };
                 var map = new google.maps.Map(document.getElementById('map'), mapOptions);
             }
@@ -236,11 +252,8 @@
             initMap();
             };
 
-            document.getElementById('yourForm').addEventListener('submit', function(event) {
-            alert("작업이 성공적으로 추가되었습니다.");
-            });
         </script>
-
+    <script type="text/javascript" src="{% static 'js/add_work.js' %}"></script>
     </main>  
 </body>
 </html>

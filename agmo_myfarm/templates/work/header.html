@@ -63,14 +63,14 @@
       <!--네비게이션 바 끝-->
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary" style="padding-bottom:0;">
-      <div class="container-fluid">
+      
         <div class="button-container" id="buttonContainer">
           <!-- 경작지 표시 -->
           {% for farm in content|dictsort:"id" %}
             {% if farm.is_selected %}
-              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-success field-button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-success field-button" style="margin-left: 10px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
             {% else %}      
-              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-outline-success field-button" style="margin-right: 20px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
+              <button id="myButton-{{ farm.id }}" onclick="handleClick(this.id)" type="button" class="btn btn-outline-success field-button" style="margin-left: 10px; margin-bottom: 10px; white-space: nowrap; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .7rem;">{{ farm.field_name }}</button>
             {% endif %}
           {% endfor %}
   
@@ -87,15 +87,34 @@
             </div>
           </button>
         </a>
-    
+      
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: end; position:relative; right:5px;">
+        <!-- 경작지 제거 버튼 -->
+        <a href="{% url 'farm:delete_farmfield' %}" style="position:relative; bottom:5px; white-space: nowrap;">
+          <button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.3rem; border-width:2px; padding-bottom: 2px; padding-top: 2px; margin-right: 10px;">
+            <div style=" display: flex; align-items: center;"> 
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-bookmark-x" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M6.146 5.146a.5.5 0 0 1 .708 0L8 6.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 7l1.147 1.146a.5.5 0 0 1-.708.708L8 7.707 6.854 8.854a.5.5 0 1 1-.708-.708L7.293 7 6.146 5.854a.5.5 0 0 1 0-.708z"/>
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+              </svg>         
+              <div style="font-weight: 800;">경작지 제거</div> 
+            </div>
+          </button>
+        </a>
+
 
         <!--검색창-->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: end; position:relative; bottom:5px;">
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="경작지 검색" aria-label="경작지 검색">
-            <button class="btn btn-outline-success" type="submit" style="white-space: nowrap;">검색</button>
-          </form>
+        <div class="d-flex" style="width:300px; position: relative; bottom: 5px;">
 
+            <div class="input-group mb-3" style="position: relative; top: 8px;">
+              <input type="text" class="form-control" id="searchInput" placeholder="경작지 검색" aria-label="경작지 검색">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" id="searchButton" aria-expanded="false">검색</button>
+              <ul class="dropdown-menu dropdown-menu-end" id="searchResults">
+                <!-- 검색 결과가 여기에 추가될 것입니다. -->
+              </ul>
+            </div>
+         
         </div>
       </div>
     </nav>

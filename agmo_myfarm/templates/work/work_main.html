@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,7 +166,22 @@
                 <!-- 탑뷰 -->
                 <div style="display:flex;">
                     <span class="material-symbols-outlined" style="margin-right:5px; margin-left:10px; margin-top:8px; font-size: 40px;">precision_manufacturing</span>
-                    <div style="flex:3; font-size: 18px; font-weight: 800; margin-top:15px;">작업기 현황</div>
+                    <div style="flex:3; font-size: 18px; font-weight: 800; margin-top:15px; display: flex;">
+                        작업기 현황 
+                        <div style="position: relative; bottom: 3px; margin-left: 10px; margin-right: 10px; color:#7a7979">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+                                <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
+                            </svg>
+                        </div>
+                        <div style="position: relative; bottom: 3px; margin-left: 10px; margin-right: 7px; color:#7a7979">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+                            </svg>
+                        </div>
+                        <div style="color:#7a7979">
+                            {{ wea.field_name }}
+                        </div>
+                    </div>
                     <div style="flex:1;">
                         <a href="{% url 'work:add_work' %}">
                             <button type="button" class="btn btn-outline-secondary" style="font-size:0px; margin-top:10px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
@@ -244,14 +260,15 @@
                                         <!-- 상세 내용 -->
                                         <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 14px; font-weight: 800; position:relative; bottom:40px;">작업시작: 2024/02/08</h6>
                                         <h7 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 0px; font-size: 14px; font-weight: 800; position:relative; bottom:40px;">작업률: 80%</h7>
-                                        <!-- 작업변경 버튼 -->
-                                        <div style="display: flex; justify-content: end; position:relative; bottom:70px;">
+                                        
+                                        <div style="display: flex; justify-content: end; position:relative; bottom:70px; ">    
+                                        <!-- 작업제거 버튼 -->
                                             <a href=#>
-                                                <button type="button" class="btn btn-outline-secondary" style="font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
-                                                    <span class="material-symbols-outlined" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 20px;">
-                                                        sync
-                                                    </span>
-                                                    <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 14px;">작업변경</div>
+                                                <button id="del-{{ card.id }}" onclick="handleDelClick(this.id)" type="button" class="btn btn-outline-danger" style="margin-left: 10px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px;">
+                                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                    </svg>
+                                                    <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 14px;">작업제거</div>
                                                 </button> 
                                             </a>
                                         </div>
@@ -266,7 +283,7 @@
         </div>
         <!-- 구글맵 도시 -->
         <div class="content map_page">  
-            <div id="map" style="width: 100%; height: 100%"></div>
+            <div id="map" style="width: 100%; height: 96%"></div>
         </div>
         <script>
             // 맵을 초기화하고 표시하는 스크립트 부분
@@ -274,16 +291,18 @@
                 var mapOptions = {
                     center: {lat: 37.2703, lng: 126.9884},
                     zoom: 20,
-                    mapTypeControl: true,
-                    mapTypeId: google.maps.MapTypeId.SATELLITE
+                    mapTypeControl: false,
+                    mapTypeId: google.maps.MapTypeId.HYBRID,
                 };
                 var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                
             }
             // 맵을 초기화하는 함수를 호출합니다.
             window.onload = function() {
             initMap();
             };
         </script>
+        <script type="text/javascript" src="{% static 'js/card.js' %}"></script>
     </main>  
 </body>
 </html>

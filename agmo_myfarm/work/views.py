@@ -13,6 +13,9 @@ from farm.models import FarmField
 from .models import Works
 from django.utils import timezone
 from .forms import WorkForm
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import MultiPoint
+from django.http import JsonResponse
 
 
 def main(request):
@@ -34,7 +37,7 @@ def main(request):
         #Works.objects.all().delete()
         #FarmField.objects.all().delete()
         if FarmField.objects.exists():
-            wea = FarmField.objects.filter(is_selected=True)
+            wea = FarmField.objects.filter(is_selected=True)[0]
             url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
             key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
             #date = '20240207'      # 20240203
@@ -108,6 +111,7 @@ def main(request):
             else:
                 print("Error Code:" + rescode)
             
+            
             content = {
                 'wea':wea,
                 'is_work':is_work,
@@ -115,7 +119,6 @@ def main(request):
 
                 'farm_list': farm_list,
             }
-
             return render(request, 'work/work_main.html', content)
         else:
             return render(request, 'work/empty.html')
@@ -148,11 +151,31 @@ def add_work(request):
 
         if request.method == 'POST':
             formset = WorkForm(request.POST)
+            
             if formset.is_valid():
-                formset.save()
-                render(request, 'work/work_main.html')
-                print('add_work 폼이 저장되었습니다!')
-                return redirect('work:main')
+                session_data = request.session.get('field_point', None)
+                if session_data is not None and session_data[0] > 0 and session_data[2] > 0:
+                    start = GEOSGeometry(f"POINT({session_data[0]} {session_data[1]})")
+                    end = GEOSGeometry(f"POINT({session_data[2]} {session_data[3]})")
+                    
+                    new_work = formset.save()
+                    new_work.start_point = start
+                    new_work.end_point = end
+                    new_work.work_fields
+                    matching_farm_fields = FarmField.objects.filter(field_name=new_work.work_fields.field_name)[0]
+                    if len(matching_farm_fields.crop) != 0:
+                        if new_work.crop not in matching_farm_fields.crop:
+                            matching_farm_fields.crop.append(new_work.crop)
+                            matching_farm_fields.save()
+                    else:
+                        matching_farm_fields.crop.append(new_work.crop)
+                        matching_farm_fields.save()
+                        print(matching_farm_fields.crop)
+
+                    render(request, 'work/work_main.html')
+                    print('add_work 폼이 저장되었습니다!')
+                    print(start, end)
+                    return redirect('work:main')
             else:
                 print(formset.errors)
                 print(request.POST)
@@ -167,34 +190,41 @@ def add_work(request):
             'machine_list' : machine_list,
             'crop_list' : crop_list,
             'formset': formset,
+            'matching_farm_fields':matching_farm_fields,
             }
 
         return render(request, 'work/add_work.html', content)
 
 
-def get_expected_path(request):
-    df = pd.read_csv(r'C:\Users\82105\Downloads\AGMO_Data_set1.csv', sheet_name='농지경계', header=None)
+def del_work(request, card_id):
+    response_body = {"result": ""}
+    if request.method == 'POST':
+        card = get_object_or_404(Works, pk=card_id)
+        card.delete()
+        response_body["result"] = "change"
+        return JsonResponse(status=200, data=response_body)
 
-    # 특정 범위의 데이터를 선택합니다.
-    selected_data = df.iloc[1:6, 1:3]  # B열 2번부터 C열 6번까지
+def save_points(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        points_coordinates = data.get('points', [])
 
-    # 선택된 데이터를 딕셔너리 리스트로 변환합니다.
-    expected_path = selected_data.to_dict(orient='records')
 
-    tm_proj = Proj(init='epsg:5179')  # TM 좌표계 (EPSG:5179)
-    wgs84_proj = Proj(init='epsg:4326')  # 위경도 좌표계 (EPSG:4326)
+        start_point_co = points_coordinates[0]
+        end_point_co = points_coordinates[1]
+        session_data = (start_point_co['lng'], start_point_co['lat'], end_point_co['lng'], end_point_co['lat'])
 
-    expected_path_lonlat = []
-    for point in expected_path:
-        tm_x, tm_y = point['x'], point['y']
-        lon, lat = transform(tm_proj, wgs84_proj, tm_x, tm_y)
-        point['lon'] = lon
-        point['lat'] = lat
-        expected_path_lonlat.append(point)
-        print(f"TM 좌표: ({tm_x}, {tm_y}), 위경도 좌표: ({lon}, {lat})")
+        request.session['field_point'] = session_data
+        response_data = {'data': session_data}
 
-    json_expected_path = json.dumps(expected_path_lonlat)
-# 이부분에서 문제가 발생한다. JSON 형태로 바꾸는부분에서ㅜㅜ 
-    print(json.dumps(expected_path_lonlat))
+        start_point = GEOSGeometry(f"POINT({start_point_co['lng']} {start_point_co['lat']})")
+        end_point = GEOSGeometry(f"POINT({end_point_co['lng']} {end_point_co['lat']})")
 
-    return render(request, 'work/work_main.html', {'json_expected_path':json_expected_path})
+        # Point 객체의 인자는 (경도, 위도) 순서입니다.
+
+        # JSON 형태로 응답합니다.
+        return JsonResponse(response_data)
+    else:
+        # POST 요청이 아닌 경우 에러 메시지를 반환합니다.
+        return JsonResponse({'error': 'POST method required.'}, status=400)
+

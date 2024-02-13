@@ -36,7 +36,7 @@ function initMap() {
         center: {lat: 36.2808, lng: 127.1426},
         zoom: 20,
         mapTypeControl: false,
-        mapTypeId: google.maps.MapTypeId.SATELLITE
+        mapTypeId: google.maps.MapTypeId.HYBRID,
     };
     let map = new google.maps.Map(document.getElementById('map'), mapOptions);
     //polyline 그리기 위한 좌표값, 임의의 값임
@@ -126,8 +126,13 @@ $.ajax({
     contentType: 'application/json',
     data: JSON.stringify({ "markers": markerCoordinates }),
     success: function(data) {
-        console.log('suc');
-        submitForm();
+        var session_data = data.data;
+        if (session_data !== null && session_data[1] > 0 && session_data[3] > 0) {
+            submitForm();
+        }
+        else {
+            alert("위치를 정확하게 입력해주세요.");
+        }
     },
     error: function(xhr, status, error) {
         console.error('Error:', error);

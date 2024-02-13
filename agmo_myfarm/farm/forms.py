@@ -9,7 +9,6 @@ class FarmForm(django_forms.ModelForm):
     class Meta:
         model = FarmField
         fields=['field_name', 
-                'crop',
                 'user_memo',
         ]
 
