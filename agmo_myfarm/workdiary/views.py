@@ -10,7 +10,7 @@ from farm.models import FarmField
 def main(request):
     today_day = timezone.now().day
 
-    farm_list = FarmField.objects.all()
+    farm_list = FarmField.objects.filter(field_name__insull=False)
     content={
     'today_day': today_day,
     'farm_field':farm_list
