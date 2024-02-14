@@ -7,6 +7,17 @@ import environ
 
 import os
 
+
+SECRET_KEY = os.environ['SECRET_KEY']
+
+#OR
+
+#Read secret key from a file
+with open('/etc/secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
+
+
+
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal308.dll'
 GEOS_LIBRARY_PATH = 'C:/OSGeo4W/bin/geos_c.dll'
 
@@ -57,6 +68,7 @@ DATABASES = {
         default="postgres://postgres:1234@localhost:5432/agmo_data2",
     ),
 }
+
 # PostgreSQL을 GIS와 함께 사용하도록 엔진 변경
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 
@@ -150,6 +162,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -293,7 +306,19 @@ ACCOUNT_FORMS = {"signup": "agmo_myfarm.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "agmo_myfarm.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "agmo_myfarm.users.forms.UserSocialSignupForm"}
+import dj_database_url
 
 
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
+
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# The URL to use when referring to static files (where they will be served from)
+STATIC_URL = '/static/'
 # Your stuff...
 # ------------------------------------------------------------------------------
