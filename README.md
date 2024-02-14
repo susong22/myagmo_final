@@ -77,7 +77,7 @@ DATABASES = {
    가능한 작업: 회원가입
    추가할 작업: area 선택지 확대
 
-3. Home
+3. Home(gif 파일입니다!)
 
    
    ![Home-ezgif com-video-to-gif-converter](https://github.com/susong22/myagmo/assets/65169271/33c34c75-9af5-44d2-8ec8-768a85d0c417)
