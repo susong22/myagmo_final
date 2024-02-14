@@ -2,23 +2,14 @@
 
 from pathlib import Path
 from dj_database_url import parse as db_url
-
+import dj_database_url
 import environ
 
 import os
 
 
-SECRET_KEY = os.environ['SECRET_KEY']
 
-#OR
-
-#Read secret key from a file
-with open('/etc/secret_key.txt') as f:
-    SECRET_KEY = f.read().strip()
-
-
-
-GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal308.dll'
+GDAL_LIBRARY_PATH = 'C:\OSGeo4W/bin\gdal308.dll'
 GEOS_LIBRARY_PATH = 'C:/OSGeo4W/bin/geos_c.dll'
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -63,10 +54,14 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default="postgres://postgres:1234@localhost:5432/agmo_data2",
-    ),
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": env("POSTGRES_DB", default="agmo_data2"),
+        "USER": env("POSTGRES_USER", default="postgres"),
+        "PASSWORD": env("POSTGRES_PASSWORD", default="1234"),
+        "HOST": env("POSTGRES_HOST", default="localhost"),
+        "PORT": env("POSTGRES_PORT", default="5432"),
+    }
 }
 
 # PostgreSQL을 GIS와 함께 사용하도록 엔진 변경
@@ -306,7 +301,7 @@ ACCOUNT_FORMS = {"signup": "agmo_myfarm.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "agmo_myfarm.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "agmo_myfarm.users.forms.UserSocialSignupForm"}
-import dj_database_url
+
 
 
 db_from_env = dj_database_url.config(conn_max_age=500)
@@ -320,5 +315,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
 # Your stuff...
 # ------------------------------------------------------------------------------
