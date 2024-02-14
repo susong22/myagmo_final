@@ -29,9 +29,9 @@ DB: PostgreSQL
 
 - 파이썬 설치
 - 장고 설치
-  
-  $ python -m pip install Django
-
+  ```
+ $ python -m pip install Django
+```
 - 데이터베이스 연결
   1. postgrsql 다운로드
      https://www.postgresql.org/
