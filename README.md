@@ -27,14 +27,28 @@ DB: PostgreSQL
 
 ## 장고 가상환경 실행
 
-- 파이썬 설치
-- 장고 설치
+1. 파이썬 설치
+2. 장고 설치
+  
 $ python -m pip install Django
-- 데이터베이스 연결
-  1. postgrsql 다운로드
+3. 데이터베이스 연결
+- postgrsql 다운로드
      https://www.postgresql.org/
-  2. SQL Shell 실행
+- SQL Shell 실행
      이곳에서 데이터베이스 편집 가능
+- 데이터베이스 생성, 이름 지정
+     https://sujinisacat.tistory.com/5
+     기본 데이터베이스 이름은 postgres입니다! pgAdmin이라는 툴로도 편집 가능합니다(별도 설치 필요)
+4. config/settings/base.py에서 데이터베이스 입력
+
+DATABASES = {
+  "default": env.db(
+    "DATABASE_URL",
+    default="postgres://postgres:[username]@localhost:5432/[데이터베이스이름]",
+    ),
+  }
+ㄴ default의 username, 데이터베이스 이름을 편집해주시면 됩니다. 5432는 기본 포트이기 때문에 설치 시 default로 설정됩니다.
+5. 터미널에서 가상환경 실행
      
 
 
