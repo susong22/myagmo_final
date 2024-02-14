@@ -43,7 +43,6 @@ DB: PostgreSQL
    |   |  └─ views.py
    
    │  ├─ farm                      #경작지 정보
-   
    │   │  ├─ init.py
    
    │   │  ├─ admin.py
