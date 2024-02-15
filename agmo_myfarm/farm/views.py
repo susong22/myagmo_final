@@ -123,7 +123,7 @@ def autocomplete(request):
     search_term = request.POST.get('search_term', '')
     # 여기에서 적절한 방식으로 검색을 수행하고 결과를 생성합니다.
     field_list = FarmField.objects.filter(field_name__icontains=search_term)
-    if len(field_list) is not 0: 
+    if len(field_list) != 0: 
         results = serialize('json', field_list)
         return JsonResponse({'results': results})
     else:

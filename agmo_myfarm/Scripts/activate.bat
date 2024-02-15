@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\82105\agmo\agmo_myfarm\agmo_myfarm
+set VIRTUAL_ENV=C:\Users\82105\agmo\agmo_0206\git_remote\myagmo\agmo_myfarm
 
 if not defined PROMPT set PROMPT=$P$G
 

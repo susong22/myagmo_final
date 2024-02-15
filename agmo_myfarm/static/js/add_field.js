@@ -22,6 +22,7 @@ let markers = [];
 var startPoint; // 클릭한 시작점의 좌표를 저장할 변수
 var endPoint;
 let label_num;
+let line;
 
 function submitForm() {
     var form = document.getElementById('addFieldForm');
@@ -40,26 +41,7 @@ function initMap(location) {
         mapTypeId: google.maps.MapTypeId.HYBRID,
     };
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    //polyline 그리기 위한 좌표값, 임의의 값임
-
     // 사용자가 지도를 클릭할 때마다 마커 추가
-
-
-    expected_path_lonlat = [
-    {"lat": 36.2808, "lng": 127.1426},
-    {"lat": 36.2804, "lng": 127.1431},
-    {"lat": 36.2808, "lng": 127.1435},
-    {"lat": 36.2811, "lng": 127.1431},
-    {"lat": 36.2808, "lng": 127.1426},
-    ]
-                    //polyline 디자인
-    const flightPath = new google.maps.Polyline({
-        path: expected_path_lonlat,
-        geodesic: true,
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-    });
 
 
 // 여기가 ------------------------------------------------------------------------------
@@ -70,22 +52,33 @@ function initMap(location) {
         map.addListener('click', function(event) {
             label_num = (markers.length + 1).toString();
             addMarker(map, event.latLng, label_num);
-        endLatLng = event.latLng; // 클릭한 위치의 좌표를 endLatLng에 저장
+            endLatLng = event.latLng; // 클릭한 위치의 좌표를 endLatLng에 저장
         });
     });
-
-flightPath.setMap(map);
 }
 //init map 끝
 
 // 사용자가 지도에 마커 추가
 function addMarker(map, location, label) {
+    
     let marker = new google.maps.Marker({
         position: location,
         map: map,
         label: label,
         draggable: true // 마커를 드래그할 수 있도록 설정
     });
+
+    if (markers.length > 0) {
+        let previousMarker = markers[markers.length - 1];
+        let line = new google.maps.Polyline({
+            path: [previousMarker.position, marker.position],
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+        line.setMap(map); // setMap 메소드로 지도에 선을 추가합니다.
+    }
     
 
     // 사용자가 마커를 클릭했을 때 마커를 이동할 수 있도록 설정
@@ -99,6 +92,7 @@ function addMarker(map, location, label) {
     });
     markers.push(marker);
     console.log(markers);
+
 
 }
 
@@ -165,9 +159,16 @@ $.ajax({
 
 // 마커를 초기화
 document.getElementById("reset_marker").addEventListener("click", function() {
+    if (line) {
+        line.setMap(null);
+        line = null; // 폴리라인 객체 초기화
+    }
     markers.forEach(function(marker) {
         marker.setMap(null);  // 각 마커를 지도에서 제거
     });
+    
+    
     markers = [];  // 배열 비우기
+
     alert('마커가 초기화되었습니다! ');
 });

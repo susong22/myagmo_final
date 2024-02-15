@@ -6,7 +6,6 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -145,7 +144,7 @@
             <div id="map" style="width: 100%; height: 100%"></div>
         </div>
     <script>
-        let map;
+ let map;
         document.getElementById('searchForm').addEventListener('click', function () {
 
             var searchInputResult = document.getElementById('searchInputLoc').value;
@@ -173,28 +172,8 @@
                 mapTypeId: google.maps.MapTypeId.HYBRID,
             };
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            //polyline 그리기 위한 좌표값, 임의의 값임
 
             // 사용자가 지도를 클릭할 때마다 마커 추가
-
-
-            expected_path_lonlat = [
-            {"lat": 36.2808, "lng": 127.1426},
-            {"lat": 36.2804, "lng": 127.1431},
-            {"lat": 36.2808, "lng": 127.1435},
-            {"lat": 36.2811, "lng": 127.1431},
-            {"lat": 36.2808, "lng": 127.1426},
-            ]
-                            //polyline 디자인
-            const flightPath = new google.maps.Polyline({
-                path: expected_path_lonlat,
-                geodesic: true,
-                strokeColor: "#FF0000",
-                strokeOpacity: 1.0,
-                strokeWeight: 2,
-            });
-
-
         // 여기가 ------------------------------------------------------------------------------
             document.getElementById('addMarker').addEventListener('click', function() {
             // 기존의 이벤트 리스너를 모두 제거합니다.
@@ -206,11 +185,8 @@
                 endLatLng = event.latLng; // 클릭한 위치의 좌표를 endLatLng에 저장
                 });
             });
-
-        flightPath.setMap(map);
         }
             
-        
     </script>
     <script type="text/javascript" src="{% static 'js/add_field.js' %}"></script>
     </main>  

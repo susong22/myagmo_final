@@ -46,21 +46,7 @@ function initMap() {
     // 사용자가 지도를 클릭할 때마다 마커 추가
 
 
-    expected_path_lonlat = [
-    {"lat": 36.2808, "lng": 127.1426},
-    {"lat": 36.2804, "lng": 127.1431},
-    {"lat": 36.2808, "lng": 127.1435},
-    {"lat": 36.2811, "lng": 127.1431},
-    {"lat": 36.2808, "lng": 127.1426},
-    ]
-                    //polyline 디자인
-    const flightPath = new google.maps.Polyline({
-        path: expected_path_lonlat,
-        geodesic: true,
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-    });
+
 
     // "create_startpoint" 버튼을 클릭했을 때 start_point를 설정할 수 있도록 이벤트를 등록
     document.getElementById('create_startpoint_button').addEventListener('click', function() {

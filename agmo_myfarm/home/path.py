@@ -14,22 +14,20 @@ def convert_coords(coord):
     return np.array(transformed_coords)
 
 def get_coord(file_path):
-    df = pd.read_excel(file_path, sheet_name="자율주행 결과")
+    df = pd.read_excel(file_path)
 
     path_data1 = df.iloc[:, [4,5]]
-    print(path_data1)
+    #print(path_data1)
 
     coord = np.array(path_data1)
-    print(coord)
+    #print(coord)
 
     result = convert_coords(coord)
 
-    downsampled_data = result[::100]
-
-    return downsampled_data
+    return result
 
 def calculate_paths():
-    agmo_data = get_coord("C:/Users/82105/Downloads/AGMO1.xlsx")
+    agmo_data = get_coord("C:/Users/82105/Downloads/AGMO_Dataset1_output.xlsx")
     length = len(agmo_data)
 
     agmo_data_edit = agmo_data[:length//2]
@@ -43,6 +41,3 @@ def calculate_paths():
     expected_path_data = agmo_data_edit[mid_index:].copy()
 
     return traveled_path_data, expected_path_data
-
-
-
