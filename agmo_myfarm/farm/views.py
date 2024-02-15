@@ -72,11 +72,11 @@ def delete_farmfield(request):
 
         return redirect('work:main')
 
-def field_select(request, farm_id):     
+def field_select(request, farmId):     
     response_body = {"result": ""}
 
     if request.method == 'POST':
-        farm = get_object_or_404(models.FarmField, pk=farm_id)
+        farm = get_object_or_404(models.FarmField, pk=farmId)
         # 이미 선택된 경작지 선택
         if farm.is_selected:
             pass
@@ -123,9 +123,13 @@ def autocomplete(request):
     search_term = request.POST.get('search_term', '')
     # 여기에서 적절한 방식으로 검색을 수행하고 결과를 생성합니다.
     field_list = FarmField.objects.filter(field_name__icontains=search_term)
-
-    results = serialize('json', field_list)
-    return JsonResponse({'results': results})
+    if len(field_list) is not 0: 
+        results = serialize('json', field_list)
+        return JsonResponse({'results': results})
+    else:
+        results = serialize('json', {})
+        print('흠')
+        return JsonResponse({'results': results})
 
 def search_change(request):
     response_body = {"result": ""}

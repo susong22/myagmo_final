@@ -1,8 +1,6 @@
-window.onload = function() {
-    initMap();
-};
+
         
-        function getCookie(name) {
+ function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -33,6 +31,16 @@ function initMap() {
         mapTypeId: google.maps.MapTypeId.HYBRID,
     };
     let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+
+    $('#farmSelect').change(function () {
+        var selectedOption = $(this).find('option:selected');
+        var locationString = selectedOption.data("loc");
+        
+        var loca = JSON.parse(locationString.replace(/'/g, '"'));
+        var locationLatLng = new google.maps.LatLng(loca.lat, loca.lng);;
+        map.setCenter(locationLatLng);
+    });
     //polyline 그리기 위한 좌표값, 임의의 값임
 
     // 사용자가 지도를 클릭할 때마다 마커 추가
@@ -114,9 +122,20 @@ document.getElementById('save_button').addEventListener('click', function() {
 });
 
 function savePoint() {
+    var workNameInput = document.getElementById('work_name_input');
+    var workName = workNameInput.value.trim();
     
-    pointsCoordinates.push(startMarker.getPosition().toJSON());
-    pointsCoordinates.push(endMarker.getPosition().toJSON());
+    if (startMarker != undefined && endMarker != undefined)
+    {
+        pointsCoordinates.length = 0;
+        pointsCoordinates.push(startMarker.getPosition().toJSON());
+        pointsCoordinates.push(endMarker.getPosition().toJSON());
+    }
+    else {
+        pointsCoordinates.length = 0;
+        pointsCoordinates.push({lat: 0, lng: 0});
+        pointsCoordinates.push({lat: 0, lng: 0});
+    }
 
     // 서버로 마커 좌표를 전송
 $.ajax({
@@ -129,12 +148,23 @@ $.ajax({
     data: JSON.stringify({ 'points': pointsCoordinates }),
     success: function(data) {
         var session_data = data.data;
-        if (session_data !== null && session_data[0] > 0 && session_data[2] > 0) {
-            alert("경작지가 성공적으로 추가되었습니다!")
-            document.getElementById('yourForm').submit();
+        if (workName === '') {
+            var warningElements = document.querySelectorAll('.text-danger');
+            warningElements.forEach(function(element) {
+            element.innerText = '';
+            document.getElementById('work_name_warning').innerText = '작업 이름을 입력하세요!';
+            })
+        }
+        else if(session_data == null || session_data[0] === 0 && session_data[2] === 0) {
+            var warningElements = document.querySelectorAll('.text-danger');
+            warningElements.forEach(function(element) {
+            element.innerText = '';
+            document.getElementById('location_warning').innerText = '경로 설정을 제대로 하십시오!';
+            })
         }
         else {
-            alert("위치를 정확하게 입력해주세요.");
+            alert("경작지가 성공적으로 추가되었습니다!");
+            document.getElementById('yourForm').submit();
         }
     },
     error: function(xhr, status, error) {
@@ -142,3 +172,7 @@ $.ajax({
     }
     });
 }
+
+window.onload = function() {
+    initMap();
+};

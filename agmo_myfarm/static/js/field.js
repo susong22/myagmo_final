@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchButton = document.getElementById('searchButton');
     const searchResults = document.getElementById('searchResults');
 
-    searchInput.addEventListener('input', function() {
+    searchButton.addEventListener('click', function() {
         const csrftoken = getCookie('csrftoken');
         const searchTerm = searchInput.value.trim();
 

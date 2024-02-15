@@ -34,8 +34,6 @@ def main(request):
 
     if request.method == 'GET':
         farm_list = FarmField.objects.all()
-        #Works.objects.all().delete()
-        #FarmField.objects.all().delete()
         if FarmField.objects.exists():
             wea = FarmField.objects.filter(is_selected=True)[0]
             url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
@@ -124,7 +122,6 @@ def main(request):
             return render(request, 'work/empty.html')
 
 def add_work(request):
-        farm_list = FarmField.objects.all()
         day_list = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
         month_list = [1,2,3,4,5,6,7,8,9,10,11,12]
         year_list = [2024,2025,2026,2027,2028,2029,2030]
@@ -143,7 +140,6 @@ def add_work(request):
             'machine_list' : machine_list,
             'crop_list' : crop_list,
             'formset': formset,
-            'farm_list': farm_list,
             }
 
             return render(request, 'work/add_work.html', content)

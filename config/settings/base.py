@@ -9,7 +9,7 @@ import os
 
 
 
-GDAL_LIBRARY_PATH = 'C:\OSGeo4W/bin\gdal308.dll'
+GDAL_LIBRARY_PATH = 'C:/OSGeo4W/bin/gdal308.dll'
 GEOS_LIBRARY_PATH = 'C:/OSGeo4W/bin/geos_c.dll'
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -53,6 +53,7 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+'''
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
@@ -61,7 +62,14 @@ DATABASES = {
         "PASSWORD": env("POSTGRES_PASSWORD", default="1234"),
         "HOST": env("POSTGRES_HOST", default="localhost"),
         "PORT": env("POSTGRES_PORT", default="5432"),
-    }
+    },
+}
+'''
+DATABASES = {
+    "default": env.db(
+        "DATABASE_URL",
+        default="postgres://postgres:1234@localhost:5432/agmo_data2",
+    ),
 }
 
 # PostgreSQL을 GIS와 함께 사용하도록 엔진 변경
@@ -303,7 +311,7 @@ SOCIALACCOUNT_ADAPTER = "agmo_myfarm.users.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_FORMS = {"signup": "agmo_myfarm.users.forms.UserSocialSignupForm"}
 
 
-
+'''
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
@@ -323,3 +331,4 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+'''

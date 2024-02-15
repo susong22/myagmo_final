@@ -11,4 +11,3 @@ class FarmForm(django_forms.ModelForm):
         fields=['field_name', 
                 'user_memo',
         ]
-
