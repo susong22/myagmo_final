@@ -59,6 +59,7 @@
                     <div style="flex:12;">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;경작지 추가
                     </div>
+                    
                     <div class="back_button" style="flex:1;">
                         <a href="{% url 'work:main' %}">
                             <button type="button" class="btn-close" aria-label="Close"></button>
@@ -161,7 +162,22 @@
                     alert('지역을 찾을 수 없습니다.');
                 }
             });
+
+            // 주소를 좌표로 변환하는 Geocoder 객체 생성
+            var geocoder = new google.maps.Geocoder();
+
+            // 주소를 좌표로 변환
+            geocoder.geocode({ 'location': latlng }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var address  = results[0].formatted_address;
+                    console.log(address)
+                    showMap(location);
+                } else {
+                    alert('지역을 찾을 수 없습니다.');
+                }
+            });
         });
+
 
         // 지도에 좌표를 표시하는 함수
         function showMap(location) {
