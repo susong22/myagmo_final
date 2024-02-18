@@ -21,7 +21,9 @@
         {% include 'work/header.html' %}
     </header>
     <div id="map"></div>
-    <button onclick="startSimulation()">Start Simulation</button>
+    <button onclick="startSimulation()">주행시작</button>
+    <button onclick="stopSimulation()">주행정지</button>
+    <button onclick="restartSimulation()">주행재개</button>
     <script>
         var map;
         var markers = [];
@@ -32,6 +34,7 @@
         var expected_path_polyline;
         var traveled_path_coords;
         var expected_path_coords;
+        var simulationRunning = false;
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -66,6 +69,16 @@
 
         function startSimulation() {
             intervalId = setInterval(updatePath, 1000); // 1초 간격으로 예상 경로를 주행
+            simulationRunning = true;
+        }
+
+        function stopSimulation() {
+            clearInterval(intervalId); // 시뮬레이션 중지
+            simulationRunning = false;
+        }
+
+        function restartSimulation() {
+            startSimulation();
         }
 
         function updatePath() {
@@ -79,13 +92,6 @@
                 if (markers.length > 0) {
                     var marker = markers[markers.length - 1];
                     marker.setPosition(new google.maps.LatLng(traveled_path[traveled_path.length - 1][0], traveled_path[traveled_path.length - 1][1]));
-                    // marker.setIcon({
-                    //     path: google.maps.SymbolPath.CIRCLE,
-                    //     scale: 4,
-                    //     fillColor: '#0000FF', // 파란색으로 변경
-                    //     fillOpacity: 1,
-                    //     strokeWeight: 0
-                    // });
                     marker.setIcon({
                         url: 'https://i.ibb.co/mChMpH7/tractor.png',
                         scaledSize: new google.maps.Size(25, 25)
