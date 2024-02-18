@@ -38,7 +38,7 @@
             flex-direction: row;
         }
         .machine_page {
-            background-color: #f9f5f5;
+            background-color: #f8f6f6;
             flex: 1;
         }
         .map_page {
@@ -160,15 +160,45 @@
                         하늘상태: {{ wea.sky_sh }}<br>
                     </div>
                 </div>
+                <!-- 경작지 제거 -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" style="padding:2px; --bs-btn-border-radius: 0rem;">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span>
+                </button>
+                <!-- 경작지 제거 모달 -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-5" id="exampleModalLabel">경고</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            경작지를 정말로 제거하시겠습니까?
+                            </div>
+                            &nbsp;
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+                                <a href="{% url 'farm:delete_farmfield' %}">
+                                    <button type="button" class="btn btn-outline-danger">경작지 제거</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
             </div>
             <hr style="margin: 0;">
             <div class="machine_content scrollable-area">
                 <!-- 탑뷰 -->
                 <div style="display:flex;">
-                    <span class="material-symbols-outlined" style="margin-right:5px; margin-left:10px; margin-top:8px; font-size: 40px;">precision_manufacturing</span>
-                    <div style="flex:3; font-size: 18px; font-weight: 800; margin-top:15px; display: flex;">
-                        작업기 현황 
-
+                    <div style="flex:4; font-size: 18px; font-weight: 800; margin-top:15px; margin-left:10px; display: flex;">
+                        <span class="material-symbols-outlined" style="font-size: 28px; margin-right:10px;">
+                            list
+                        </span>
+                        
+                        <div style="white-space: nowrap;">작업기 현황</div>
                         <div style="position: relative; bottom: 3px; margin-left: 10px; margin-right: 10px; color:#7a7979">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
                                 <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
@@ -185,11 +215,9 @@
                     </div>
                     <div style="flex:1;">
                         <a href="{% url 'work:add_work' %}">
-                            <button type="button" class="btn btn-outline-secondary" style="font-size:0px; margin-top:10px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
-                                <span class="material-symbols-outlined" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 20px;">
-                                    add
-                                </span>
-                                <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px;">작업추가</div>
+                            <button type="button" class="btn" style="color:rgb(0, 161, 49); font-size:0px; margin-top:10px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-radius: 0rem; border-bottom: 2px solid rgb(0, 161, 49); padding-bottom: 5px; position: relative; top:5px;">
+                                
+                                <div style="font-size: 14px; font-weight: 800; line-height: 1;">작업추가</div>
                             </button> 
                         </a>
                     </div>
@@ -218,17 +246,18 @@
                                                         sprinkler
                                                     </span>
                                                 {% endif %}
+                                                
                                                 <!-- 진행률(배경색) -->
                                                 {% if card.machine_name == '파종기' %}
-                                                    <span id="progressIcon{{ card.id }}" class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: red; z-index: 1;">
+                                                    <span id="progressIcon{{ card.id }}" class="material-symbols-outlined opacity-50" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: red; z-index: 1;">
                                                         clock_loader_90
                                                     </span>
                                                 {% elif card.machine_name == '써레' %}
-                                                    <span id="progressIcon{{ card.id }}" class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: blue; z-index: 1;">
+                                                    <span id="progressIcon{{ card.id }}" class="material-symbols-outlined opacity-50" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: blue; z-index: 1;">
                                                         clock_loader_90
                                                     </span>
                                                 {% elif card.machine_name == '스프레이어' %}
-                                                    <span id="progressIcon{{ card.id }}" class="material-symbols-outlined" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: green; z-index: 1;">
+                                                    <span id="progressIcon{{ card.id }}" class="material-symbols-outlined opacity-50" style="font-size: 40px; position: relative; right: 33px; bottom: 7px; color: green; z-index: 1;">
                                                         clock_loader_90
                                                     </span>
                                                 {% endif %}
@@ -237,30 +266,31 @@
                                                     circle
                                                 </span>
                                                 <!-- 작업명 -->
-                                                <h5 style="margin-right: 10px; font-size: 18px; font-weight: 800; position:relative; right:65px; white-space: nowrap;">{{card.machine_name}}</h5>
+                                                <h5 style="margin-right: 10px; font-size: 16px; font-weight: 800; position:relative; right:65px; bottom: 12px; white-space: nowrap;">{{card.machine_name}}</h5>
                                             </div>
+                                            <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 12px; font-weight: 800; position:relative; left:37px; bottom:30px;">작업명: {{ card.work_name }}</h6>
                                         
                                             <!-- 오른쪽에 정렬되는 요소들 -->
-                                            <div style="display: flex; justify-content: flex-end; position:relative; bottom:50px;">
+                                            <div style="display: flex; justify-content: flex-end; position:relative; bottom:80px;;">
                                                 <!-- 와이파이 아이콘 -->
-                                                <span class="material-symbols-outlined" style="margin-left:140px;">
+                                                <span class="material-symbols-outlined" style="margin-left:140px; font-size: 20px;">
                                                     wifi
                                                 </span>
                                                 <!-- 배터리 아이콘 -->
-                                                <span class="material-symbols-outlined" style="margin-left: 10px; font-size: 30px; transform: scaleX(-1);">
+                                                <span class="material-symbols-outlined" style="margin-left: 20px; font-size: 30px; transform: scaleX(-1); position:relative; bottom:5px;">
                                                     battery_horiz_075
                                                 </span>
                                                 <!-- 배터리 퍼센트 -->
-                                                <div style="font-size: 14px; margin-left: 3px; margin-top: 5px;">75%</div>
+                                                <div style="font-size: 14px; margin-left: 3px; margin-top: 5px; position:relative; bottom:5px;">75%</div>
                                                 <!-- 스위치 -->
-                                                <span class="material-symbols-outlined" style="margin-left: 10px; font-size: 40px; position:relative; bottom:5px;">
+                                                <span class="material-symbols-outlined" style="margin-left: 20px; font-size: 30px; position:relative; bottom:5px;">
                                                     toggle_on
                                                 </span>
                                             </div>
                                         </div>
                                         <!-- 상세 내용 -->
-                                        <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 14px; font-weight: 800; position:relative; bottom:50px;">작업명: {{ card.work_name }}</h6>
-                                        <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 14px; font-weight: 800; position:relative; bottom:50px;">작업기간: 2024/02/08 ~ 2024/02/15</h6>
+                                        
+                                        <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 12px; font-weight: 800; position:relative; bottom:60px;">작업기간: {{card.start_date_year}}/{{card.start_date_month}}/{{card.start_date_day}} ~ {{card.end_date_year}}/{{card.end_date_month}}/{{card.end_date_day}}</h6>
                                         <div style="display: flex;">
                                             <div class="progress" style="position:relative; bottom:54px; flex:3;" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                                                 <div class="progress-bar bg-success" style="width: 25%">작업률: 25%</div>
@@ -270,11 +300,11 @@
                                         <div style="display: flex; justify-content: end; position:relative; bottom:90px; ">    
                                         <!-- 작업제거 버튼 -->
                                             <a href=#>
-                                                <button id="del-{{ card.id }}" onclick="handleDelClick(this.id)" type="button" class="btn btn-outline-danger" style="margin-left: 10px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 0.2rem; border-width:2px; padding-bottom: 5px;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px;">
+                                                <button id="del-{{ card.id }}" onclick="handleDelClick(this.id)" type="button" class="btn btn-outline-danger" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" style="display: inline-block; vertical-align: middle; line-height: 1; padding-top: 0px;">
                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                                     </svg>
-                                                    <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px; font-size: 14px;">작업제거</div>
+                                                    <div style="font-size: 12px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1;">작업제거</div>
                                                 </button> 
                                             </a>
                                         </div>
@@ -289,8 +319,9 @@
         </div>
         <!-- 구글맵 도시 -->
         <div class="content map_page">  
-            <div id="map" style="width: 100%; height: 96%"></div>
+            <div id="map" style="width: 100%; height: 98%"></div>
         </div>
+
         <script>
             var field_string = "{{ wea.location }}";
             var decodedString = new DOMParser().parseFromString('<!doctype html><body>' + field_string, 'text/html').body.textContent;
