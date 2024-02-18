@@ -66,9 +66,19 @@ def add_farmfield(request):
                 formset = FarmForm() 
 
 def delete_farmfield(request):
-    
-        Works.objects.all().delete()
-        FarmField.objects.all().delete()
+        selected_farm = FarmField.objects.filter(is_selected=True)[0]
+        next_farm = FarmField.objects.filter(is_selected=False).order_by('id').first()
+        works = Works.objects.filter(work_fields=selected_farm)
+        if len(works) is not 0:
+            for item in works:
+                print("삭제된 객체", item)
+                item.delete()
+        selected_farm.delete()
+        if next_farm:
+            next_farm.is_selected = True
+            next_farm.save()
+        #Works.objects.all().delete()
+        #FarmField.objects.all().delete()
 
         return redirect('work:main')
 
