@@ -69,7 +69,7 @@ def delete_farmfield(request):
         selected_farm = FarmField.objects.filter(is_selected=True)[0]
         next_farm = FarmField.objects.filter(is_selected=False).order_by('id').first()
         works = Works.objects.filter(work_fields=selected_farm)
-        if len(works) is not 0:
+        if len(works) != 0:
             for item in works:
                 print("삭제된 객체", item)
                 item.delete()

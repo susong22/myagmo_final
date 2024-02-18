@@ -68,7 +68,7 @@ DATABASES = {
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
-        default="postgres://postgres:song@localhost:5432/agmo_data4",
+        default="postgres://postgres:1234@localhost:5432/agmo",
     ),
 }
 

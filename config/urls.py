@@ -17,6 +17,7 @@ urlpatterns = [
     path("work/farm/", include('farm.urls', namespace="farm")),
     path("tracking/", include('tracking.urls', namespace="tracking")),
     path("workdiary/", include('workdiary.urls', namespace="workdiary")),
+    path("summary/", include('summary.urls',namespace="summary")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
