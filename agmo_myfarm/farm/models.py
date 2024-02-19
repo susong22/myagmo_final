@@ -27,15 +27,37 @@ class FarmField(models.Model):
     
     field_name = models.CharField(blank=True, max_length=255, unique=True)
     location = models.JSONField(null=True)
+    location_name_detail = models.CharField(null=True)
     crop = models.JSONField(null=True)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것
     
     weather_date = models.CharField(null=True)
     weather_time = models.CharField(null=True)
-    is_rain = models.FloatField(null=True)             # 강수 확률(POP)
+
+    # 다음날 정보(+1)
+    one_after_rain_sh = models.CharField(null=True)
+    one_after_sky_sh = models.CharField(null=True)
+    one_after_max = models.IntegerField(null=True)
+    one_after_min = models.IntegerField(null=True)
+
+    # 그 다음날 정보(+2)
+    two_after_rain_sh = models.CharField(null=True)
+    two_after_sky_sh = models.CharField(null=True)
+    two_after_max = models.IntegerField(null=True)
+    two_after_min = models.IntegerField(null=True)
+    
+    # 그그 다음날 정보(+3)
+    three_after_rain_sh = models.CharField(null=True)
+    three_after_sky_sh = models.CharField(null=True)
+    three_after_max = models.IntegerField(null=True)
+    three_after_min = models.IntegerField(null=True)
+
+    max_tem = models.IntegerField(null=True)           # 최고 기온(TMX)
+    min_tem = models.IntegerField(null=True)           # 최저 기온(TMN)
+    is_rain = models.IntegerField(null=True)           # 강수 확률(POP)
     rain_sh = models.CharField(null=True)              # 강수 형태(PTY)
-    temperature = models.FloatField(null=True)         # 1시간 기온(TMP)
-    humidity = models.FloatField(null=True)            # 습 도(REH)
+    temperature = models.IntegerField(null=True)       # 1시간 기온(TMP)
+    humidity = models.IntegerField(null=True)          # 습 도(REH)
     wind_direction = models.CharField(null=True)       # 풍 향(VEC)
     wind_speed = models.FloatField(null=True)          # 풍 속(WSD)
     sky_sh = models.CharField(null=True)               # 하늘 상태(SKY)

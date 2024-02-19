@@ -163,19 +163,6 @@
                 }
             });
 
-            // 주소를 좌표로 변환하는 Geocoder 객체 생성
-            var geocoder = new google.maps.Geocoder();
-
-            // 주소를 좌표로 변환
-            geocoder.geocode({ 'location': latlng }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    var address  = results[0].formatted_address;
-                    console.log(address)
-                    showMap(location);
-                } else {
-                    alert('지역을 찾을 수 없습니다.');
-                }
-            });
         });
 
 

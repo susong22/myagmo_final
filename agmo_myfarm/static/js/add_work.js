@@ -21,11 +21,17 @@ let startMarker, endMarker;
 var startLatLng, endLatLng;
 var startPoint; // 클릭한 시작점의 좌표를 저장할 변수
 var endPoint;
+let line;
 
 function initMap() {
                     //맵 보여주는 함수
+    var selectedOption = $('#farmSelect').find('option:selected');
+    var locationString = selectedOption.data("loc");
+    var loca = JSON.parse(locationString.replace(/'/g, '"'));
+    var initialLatLng = new google.maps.LatLng(loca.lat, loca.lng);
+
     var mapOptions = {
-        center: {lat: 36.2808, lng: 127.1426},
+        center: initialLatLng,
         zoom: 20,
         mapTypeControl: false,
         mapTypeId: google.maps.MapTypeId.HYBRID,
@@ -49,16 +55,23 @@ function initMap() {
 
 
     // "create_startpoint" 버튼을 클릭했을 때 start_point를 설정할 수 있도록 이벤트를 등록
-    document.getElementById('create_startpoint_button').addEventListener('click', function() {
-    // 기존의 이벤트 리스너를 모두 제거합니다.
-        google.maps.event.clearListeners(map, 'click');
-        // 지도 클릭 이벤트를 등록하여 클릭한 위치를 endPoint에 저장
-        map.addListener('click', function(event) {
-        // 새로운 끝점을 선택할 때마다 이전의 끝점 마커를 제거합니다.
-            addStart(map, event.latLng);
-            startLatLng = event.latLng; // 클릭한 위치의 좌표를 startLatLng에 저장
-        });
-    }); 
+        document.getElementById('create_startpoint_button').addEventListener('click', function() {
+        // 기존의 이벤트 리스너를 모두 제거합니다.
+            google.maps.event.clearListeners(map, 'click');
+            // 지도 클릭 이벤트를 등록하여 클릭한 위치를 endPoint에 저장
+            map.addListener('click', function(event) {
+            // 새로운 끝점을 선택할 때마다 이전의 끝점 마커를 제거합니다.
+                if (endMarker) {
+                    addStart(map, event.latLng);
+                    drawLine(map);
+
+                }
+                else {
+                    addStart(map, event.latLng);
+
+                }
+            });
+        }); 
 
 
 
@@ -68,12 +81,17 @@ function initMap() {
         // 지도 클릭 이벤트를 등록하여 클릭한 위치를 endPoint에 저장
         map.addListener('click', function(event) {
         // 새로운 끝점을 선택할 때마다 이전의 끝점 마커를 제거합니다.
-            addEnd(map, event.latLng);
-            endLatLng = event.latLng; // 클릭한 위치의 좌표를 endLatLng에 저장
+            if (startMarker) {
+                // startMarker가 이미 있다면 endMarker를 추가하고 선을 그린다
+                addEnd(map, event.latLng);
+                drawLine(map);
+            }
+            else {
+                alert('시작점을 먼저 설정해주십시오.');
+            }
         });
+        
     });
-
-flightPath.setMap(map);
 }
 //init map 끝
 
@@ -88,6 +106,7 @@ function addStart(map, location) {
         map: map,
         icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // 빨간색 마커 아이콘 사용
     });
+    startPoint = location;
     
 }
 
@@ -100,12 +119,39 @@ function addEnd(map, location) {
         map: map,
         icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // 파란색 마커 아이콘 사용
     });
+    endPoint = location;
 }
 
 //startPoint를 서버로 전송하는 함수
 document.getElementById('save_button').addEventListener('click', function() {
     savePoint();
 });
+
+function drawLine(map) {
+
+    // 이전에 그린 선이 있다면 제거
+    if (line) {
+        line.setMap(null);
+    }
+
+    // Polyline 그리기
+    line = new google.maps.Polyline({
+        path: [startPoint, endPoint],
+        geodesic: true,
+        strokeColor: '#0000FF',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        icons: [{
+            icon: {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale: 5
+            },
+            offset: '100%'
+        }]
+    });
+
+    line.setMap(map);
+}   
 
 function savePoint() {
     var workNameInput = document.getElementById('work_name_input');

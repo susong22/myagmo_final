@@ -40,22 +40,24 @@
         .machine_page {
             background-color: #f8f6f6;
             flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         .map_page {
-            flex: 2;
+            flex: 2;     
         }
 
         .date {
-            margin-top : 10px;
-            margin-left : 25px;
+            margin-top : 5px;
+            margin-left : 15px;
+            margin-right: 20px;
             font-size: 16px;
             font-weight: 800;
             color: #7a7979;;
         }
         .weather_icon {
             position: absolute;
-            top: 130px;
-            left: 30px;
+            left: 40px;
            
             margin: 30px;
             z-index: 1;
@@ -64,8 +66,8 @@
         }
         .temperature {
             position: absolute;
-            top: 130px;
-            left: 10px;
+            top: 30px;
+            left: 30px;
            
             margin: 10px;
             z-index: 2;
@@ -73,8 +75,8 @@
             font-weight: 800;
         }
         .weather_etc {
-            margin-top : 10px;
-            margin-left : 40px;
+            margin-top : 5px;
+            margin-left : 60px;
             flex: 1;
             font-size: 16px;
             font-weight: 800;
@@ -86,6 +88,12 @@
             flex-direction: column;
             overflow-y: auto;
             height: 500px;
+        }
+        .accordion-button::after {
+            position: absolute;
+            top: 85%;
+            left: 45%
+            /* 다른 위치 및 스타일링을 원하는 대로 조정 */
         }
         
 
@@ -100,96 +108,433 @@
 
     <main>
         <div class="machine_page">
-            <div class="weather_content">
-                <div class="date">
-                    <p>{{ wea.weather_date }}</p>
-                </div>
+            <!-- 날씨 부분 -->
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button style="z-index: 2; padding: 10px; padding-top: 20px; height:123px; background-color: #ffffff;" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <div class="weather_content">
 
-                <div class="weather_icon"> 
-                    {% if wea.rain_sh == '없음' %}
-                        {% if wea.sky_sh == '맑음' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-brightness-high" viewBox="0 0 16 16">
-                            <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-                        </svg>
-                        {% elif wea.sky_sh == '구름많음' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-clouds" viewBox="0 0 16 16">
-                            <path d="M16 7.5a2.5 2.5 0 0 1-1.456 2.272 3.513 3.513 0 0 0-.65-.824 1.5 1.5 0 0 0-.789-2.896.5.5 0 0 1-.627-.421 3 3 0 0 0-5.22-1.625 5.587 5.587 0 0 0-1.276.088 4.002 4.002 0 0 1 7.392.91A2.5 2.5 0 0 1 16 7.5z"/>
-                            <path d="M7 5a4.5 4.5 0 0 1 4.473 4h.027a2.5 2.5 0 0 1 0 5H3a3 3 0 0 1-.247-5.99A4.502 4.502 0 0 1 7 5zm3.5 4.5a3.5 3.5 0 0 0-6.89-.873.5.5 0 0 1-.51.375A2 2 0 1 0 3 13h8.5a1.5 1.5 0 1 0-.376-2.953.5.5 0 0 1-.624-.492V9.5z"/>
-                        </svg>
-                        {% elif wea.sky_sh == '흐림' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-cloud-haze2" viewBox="0 0 16 16">
-                            <path d="M8.5 3a4.002 4.002 0 0 0-3.8 2.745.5.5 0 1 1-.949-.313 5.002 5.002 0 0 1 9.654.595A3 3 0 0 1 13 12H4.5a.5.5 0 0 1 0-1H13a2 2 0 0 0 .001-4h-.026a.5.5 0 0 1-.5-.445A4 4 0 0 0 8.5 3zM0 7.5A.5.5 0 0 1 .5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm2 2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-2 4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
-                        </svg>
-                        {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-brightness-high" viewBox="0 0 16 16">
-                            <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-                        </svg>
-                        {% endif %}
-                    {% elif wea.rain_sh == '비' %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-cloud-rain-heavy" viewBox="0 0 16 16">
-                        <path d="M4.176 11.032a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 1 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 1 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 1 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm.229-7.005a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973zM8.5 1a4 4 0 0 1 3.976 3.555.5.5 0 0 0 .5.445H13a2 2 0 0 1 0 4H3.5a2.5 2.5 0 1 1 .605-4.926.5.5 0 0 0 .596-.329A4.002 4.002 0 0 1 8.5 1z"/>
-                    </svg>
-                    {% elif wea.rain_sh == '비/눈' %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-cloud-sleet" viewBox="0 0 16 16">
-                        <path d="M13.405 4.027a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973zM8.5 1a4 4 0 0 1 3.976 3.555.5.5 0 0 0 .5.445H13a2 2 0 0 1 0 4H3.5a2.5 2.5 0 1 1 .605-4.926.5.5 0 0 0 .596-.329A4.002 4.002 0 0 1 8.5 1zM2.375 13.5a.25.25 0 0 1 .25.25v.57l.501-.287a.25.25 0 0 1 .248.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 0 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25zm1.849-2.447a.5.5 0 0 1 .223.67l-.5 1a.5.5 0 1 1-.894-.447l.5-1a.5.5 0 0 1 .67-.223zM6.375 13.5a.25.25 0 0 1 .25.25v.57l.501-.287a.25.25 0 0 1 .248.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 0 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25zm1.849-2.447a.5.5 0 0 1 .223.67l-.5 1a.5.5 0 1 1-.894-.447l.5-1a.5.5 0 0 1 .67-.223zm2.151 2.447a.25.25 0 0 1 .25.25v.57l.501-.287a.25.25 0 0 1 .248.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 0 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25zm1.849-2.447a.5.5 0 0 1 .223.67l-.5 1a.5.5 0 1 1-.894-.447l.5-1a.5.5 0 0 1 .67-.223z"/>
-                    </svg>
-                    {% elif wea.rain_sh == '눈' %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-snow" viewBox="0 0 16 16">
-                        <path d="M8 16a.5.5 0 0 1-.5-.5v-1.293l-.646.647a.5.5 0 0 1-.707-.708L7.5 12.793V8.866l-3.4 1.963-.496 1.85a.5.5 0 1 1-.966-.26l.237-.882-1.12.646a.5.5 0 0 1-.5-.866l1.12-.646-.884-.237a.5.5 0 1 1 .26-.966l1.848.495L7 8 3.6 6.037l-1.85.495a.5.5 0 0 1-.258-.966l.883-.237-1.12-.646a.5.5 0 1 1 .5-.866l1.12.646-.237-.883a.5.5 0 1 1 .966-.258l.495 1.849L7.5 7.134V3.207L6.147 1.854a.5.5 0 1 1 .707-.708l.646.647V.5a.5.5 0 1 1 1 0v1.293l.647-.647a.5.5 0 1 1 .707.708L8.5 3.207v3.927l3.4-1.963.496-1.85a.5.5 0 1 1 .966.26l-.236.882 1.12-.646a.5.5 0 0 1 .5.866l-1.12.646.883.237a.5.5 0 1 1-.26.966l-1.848-.495L9 8l3.4 1.963 1.849-.495a.5.5 0 0 1 .259.966l-.883.237 1.12.646a.5.5 0 0 1-.5.866l-1.12-.646.236.883a.5.5 0 1 1-.966.258l-.495-1.849-3.4-1.963v3.927l1.353 1.353a.5.5 0 0 1-.707.708l-.647-.647V15.5a.5.5 0 0 1-.5.5z"/>
-                    </svg>
-                    {% elif wea.rain_sh == '소나기' %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-cloud-rain" viewBox="0 0 16 16">
-                        <path d="M4.158 12.025a.5.5 0 0 1 .316.633l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.317zm3 0a.5.5 0 0 1 .316.633l-1 3a.5.5 0 0 1-.948-.316l1-3a.5.5 0 0 1 .632-.317zm3 0a.5.5 0 0 1 .316.633l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.317zm3 0a.5.5 0 0 1 .316.633l-1 3a.5.5 0 1 1-.948-.316l1-3a.5.5 0 0 1 .632-.317zm.247-6.998a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 11H13a3 3 0 0 0 .405-5.973zM8.5 2a4 4 0 0 1 3.976 3.555.5.5 0 0 0 .5.445H13a2 2 0 0 1 0 4H3.5a2.5 2.5 0 1 1 .605-4.926.5.5 0 0 0 .596-.329A4.002 4.002 0 0 1 8.5 2z"/>
-                    </svg>
-                    {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-cloud-rain-heavy" viewBox="0 0 16 16">
-                        <path d="M4.176 11.032a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 1 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 1 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 1 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293zm.229-7.005a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973zM8.5 1a4 4 0 0 1 3.976 3.555.5.5 0 0 0 .5.445H13a2 2 0 0 1 0 4H3.5a2.5 2.5 0 1 1 .605-4.926.5.5 0 0 0 .596-.329A4.002 4.002 0 0 1 8.5 1z"/>
-                    </svg>
-                    {% endif %}
-                </div>
+                                <div class="date">
+                                    <p>{{ wea.weather_date }}</p>
+                                </div>
 
-                <div class="temperature">
-                    <p>{{ wea.temperature }}°</p>
-                </div>
+                                <div class="weather_icon"> 
+                                    {% if wea.rain_sh == '없음' %}
+                                        {% if wea.sky_sh == '맑음' %}
+                                        <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="width: 80px;">
 
-                <div class="weather_etc">
-                    강수확률: {{ wea.is_rain }}%<br>
-                    습도: {{ wea.humidity }}%<br>
-                    풍속: {{ wea.wind_speed }}m/s ({{ wea.wind_direction }})<br>
-                    <div style="color: black; margin-top: 6px; margin-bottom: 15px;">
-                        하늘상태: {{ wea.sky_sh }}<br>
-                    </div>
-                </div>
-                <!-- 경작지 제거 -->
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" style="padding:2px; --bs-btn-border-radius: 0rem;">
-                    <span class="material-symbols-outlined">
-                        delete
-                    </span>
-                </button>
-                <!-- 경작지 제거 모달 -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title fs-5" id="exampleModalLabel">경고</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        {% elif wea.sky_sh == '구름많음' %}
+                                        <img src="https://cdn-icons-png.flaticon.com/512/494/494435.png" style="width: 80px;">
+
+                                        {% elif wea.sky_sh == '흐림' %}
+                                        <img src="https://cdn-icons-png.flaticon.com/512/3222/3222801.png" style="width: 80px;">
+
+                                        {% else %}
+                                        <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="width: 80px;">
+
+                                        {% endif %}
+                                    {% elif wea.rain_sh == '비' %}
+                                    <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="width: 80px;">
+
+                                    {% elif wea.rain_sh == '비/눈' %}
+                                    <img src="https://cdn-icons-png.flaticon.com/512/6631/6631733.png" style="width: 80px;">
+
+                                    {% elif wea.rain_sh == '눈' %}
+                                    <img src="https://cdn-icons-png.flaticon.com/512/2315/2315309.png" style="width: 80px;">
+
+                                    {% elif wea.rain_sh == '소나기' %}
+                                    <img src="https://cdn-icons-png.flaticon.com/512/4834/4834677.png" style="width: 80px;">
+
+                                    {% else %}
+                                    <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="width: 80px;">
+
+                                    {% endif %}
+                                </div>
+
+                                <div class="temperature">
+                                    <p>{{ wea.temperature }}°</p>
+                                </div>
+
+                                <div class="weather_etc">
+                                    <p style="line-height: 1.2; margin-bottom: 5px;">강수확률: {{ wea.is_rain }}%</p>
+                                    <p style="line-height: 1.2; margin-bottom: 5px;">습도: {{ wea.humidity }}%</p>
+                                    <p style="line-height: 1.2; margin-bottom: 5px;">풍속: {{ wea.wind_speed }}m/s ({{ wea.wind_direction }})</p>
+                                    <p style="line-height: 1.5; color: rgb(45, 45, 45); margin-top: 16px;">하늘상태: {{ wea.sky_sh }}</p>
+                                </div>
+                                
+                                
                             </div>
-                            <div class="modal-body">
-                            경작지를 정말로 제거하시겠습니까?
+                        </button>
+                        
+                    </h2>
+
+                    <!-- 펼쳐질 부분 -->
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body" style="font-size: 16px; font-weight: 800; background-color: #f5f0fa; padding: 10px; padding-top: 0;">
+                            <div class="card" style="border-width: 0;">
+                                <div class="card-body">
+                                    <!-- 위치 -->
+                                    <div id="now_loc" style="display: flex; color:#7a7979; font-size: 14px; margin-bottom: 15px; margin-top: 5px;">
+                                        위치는 여기입니다.
+                                    </div>   
+                                    
+
+                                    <!-- 오늘 날씨 카드 -->
+                                    <hr>
+                                    <div style="display: flex;">
+                                        <div style="display: flex; flex-direction: column;">
+                                            <div>{{ day_week.0|date:"l"|slice:"0:1" }}(오늘)</div>
+                                            <div style="font-size: 13px;">
+                                                {{ day_list.0 }}
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            {% if wea.rain_sh == '없음' %}
+                                                {% if wea.sky_sh == '맑음' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+
+                                                {% elif wea.sky_sh == '구름많음' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/494/494435.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+
+                                                {% elif wea.sky_sh == '흐림' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222801.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+
+                                                {% else %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+
+                                                {% endif %}
+
+                                            {% elif wea.rain_sh == '비' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+
+                                            {% elif wea.rain_sh == '비/눈' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/6631/6631733.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>   
+
+                                            {% elif wea.rain_sh == '눈' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/2315/2315309.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>  
+
+                                            {% elif wea.rain_sh == '소나기' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4834/4834677.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+
+                                            {% else %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.min_tem }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.max_tem }}°</div>
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+
+                                    <!-- 내일 날씨 카드 -->
+                                    <hr>
+                                    <div style="display: flex;">
+                                        <div style="display: flex; flex-direction: column; margin-right: 24px;">
+                                            <div>{{ day_week.1|date:"l"|slice:"0:1" }}</div>
+                                            <div style="font-size: 13px;">
+                                                {{ day_list.1 }}
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            {% if wea.one_after_rain_sh == '없음' %}
+                                                {% if wea.one_after_sky_sh == '맑음' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+
+                                                {% elif wea.one_after_sky_sh == '구름많음' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/494/494435.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+
+                                                {% elif wea.one_after_sky_sh == '흐림' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222801.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+
+                                                {% else %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+
+                                                {% endif %}
+
+                                            {% elif wea.one_after_rain_sh == '비' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+
+                                            {% elif wea.one_after_rain_sh == '비/눈' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/6631/6631733.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>   
+
+                                            {% elif wea.one_after_rain_sh == '눈' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/2315/2315309.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>  
+
+                                            {% elif wea.one_after_rain_sh == '소나기' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4834/4834677.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+
+                                            {% else %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.one_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.one_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.one_after_max }}°</div>
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+
+                                    <!-- 2일뒤 날씨 카드 -->
+                                    <hr>
+                                    <div style="display: flex;">
+                                        <div style="display: flex; flex-direction: column; margin-right: 24px;">
+                                            <div>{{ day_week.2|date:"l"|slice:"0:1" }}</div>
+                                            <div style="font-size: 13px;">
+                                                {{ day_list.2 }}
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            {% if wea.two_after_rain_sh == '없음' %}
+                                                {% if wea.two_after_sky_sh == '맑음' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+
+                                                {% elif wea.two_after_sky_sh == '구름많음' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/494/494435.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+
+                                                {% elif wea.two_after_sky_sh == '흐림' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222801.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+
+                                                {% else %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_sky_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+
+                                                {% endif %}
+
+                                            {% elif wea.two_after_rain_sh == '비' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+
+                                            {% elif wea.two_after_rain_sh == '비/눈' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/6631/6631733.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>   
+
+                                            {% elif wea.two_after_rain_sh == '눈' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/2315/2315309.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>  
+
+                                            {% elif wea.two_after_rain_sh == '소나기' %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4834/4834677.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+
+                                            {% else %}
+                                            <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                            <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.two_after_rain_sh }}</div>
+                                            <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.two_after_min }}°</div>
+                                            <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                            <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.two_after_max }}°</div>
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+
+                                    <!-- 3일뒤 날씨 카드 -->
+                                    {% if wea.three_after_min is not None %}
+                                        <hr>
+                                        <div style="display: flex;">
+                                            <div style="display: flex; flex-direction: column;  margin-right: 24px;">
+                                                <div>{{ day_week.3|date:"l"|slice:"0:1" }}</div>
+                                                <div style="font-size: 13px;">
+                                                    {{ day_list.3 }}
+                                                </div>
+                                            </div>
+                                            <div style="display: flex;">
+                                                {% if wea.three_after_rain_sh == '없음' %}
+                                                    {% if wea.three_after_sky_sh == '맑음' %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                    <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_sky_sh }}</div>
+                                                    <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                    <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                    <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+
+                                                    {% elif wea.three_after_sky_sh == '구름많음' %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/494/494435.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                    <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_sky_sh }}</div>
+                                                    <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                    <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                    <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+
+                                                    {% elif wea.three_after_sky_sh == '흐림' %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3222/3222801.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                    <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_sky_sh }}</div>
+                                                    <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                    <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                    <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+
+                                                    {% else %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3222/3222675.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                    <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_sky_sh }}</div>
+                                                    <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                    <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                    <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+
+                                                    {% endif %}
+
+                                                {% elif wea.three_after_rain_sh == '비' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_rain_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+
+                                                {% elif wea.three_after_rain_sh == '비/눈' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/6631/6631733.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_rain_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>   
+
+                                                {% elif wea.three_after_rain_sh == '눈' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/2315/2315309.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_rain_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>  
+
+                                                {% elif wea.three_after_rain_sh == '소나기' %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/4834/4834677.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_rain_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+
+                                                {% else %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/4439/4439057.png" style="margin-left: 120px; margin-right: 0px; width: 60px;">
+                                                <div style="margin-right: 70px; margin-top: 30px; white-space: nowrap; color: #6a6a6a;">{{ wea.three_after_rain_sh }}</div>
+                                                <div style="color: rgba(0, 0, 255, 0.51); margin-top: 6px; font-size: 30px;">{{ wea.three_after_min }}°</div>
+                                                <div style="font-size: 30px; font-weight: 100; margin-top: 6px; margin-right: 5px; color: #b5b5b5;"> / </div>
+                                                <div style="color: rgba(255, 0, 0, 0.51); font-size: 36px; margin-top: 2px;">{{ wea.three_after_max }}°</div>
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                            &nbsp;
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
-                                <a href="{% url 'farm:delete_farmfield' %}">
-                                    <button type="button" class="btn btn-outline-danger">경작지 제거</button>
-                                </a>
+                            <!-- 미세먼지 카드 -->
+                            <div style="display: flex;">
+                                <div class="card" style="border-width: 0; margin-top: 10px; margin-right: 10px; flex:1;  background-color: rgba(13, 0, 255, 0.07);">
+                                    <div class="card-body text-center">
+                                        
+                                        <img src="https://cdn-icons-png.flaticon.com/512/3071/3071487.png" style="width: 36px;">
+                                        <div>미세먼지</div>
+                                        <div style="font-size: 13px; color:#7a7979;">
+                                            좋음
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card" style="border-width: 0; margin-top: 10px; flex:1; background-color: rgba(255, 0, 0, 0.07);">
+                                    <div class="card-body text-center">
+                                        
+                                        <img src="https://cdn-icons-png.flaticon.com/512/6421/6421095.png" style="width: 36px;">
+                                        <div>자외선 지수</div>
+                                        <div style="font-size: 13px; color:#7a7979;">
+                                            나쁨 
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-                  
             </div>
+
             <hr style="margin: 0;">
+
             <div class="machine_content scrollable-area">
                 <!-- 탑뷰 -->
                 <div style="display:flex;">
@@ -222,6 +567,8 @@
                         </a>
                     </div>
                 </div>
+
+
                 <!-- 카드뷰 -->
                 {% if is_work %}
                     {% for card in work_list %}
@@ -271,9 +618,10 @@
                                             <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 12px; font-weight: 800; position:relative; left:37px; bottom:30px;">작업명: {{ card.work_name }}</h6>
                                         
                                             <!-- 오른쪽에 정렬되는 요소들 -->
-                                            <div style="display: flex; justify-content: flex-end; position:relative; bottom:80px;;">
+                                            <div style="display: flex; justify-content: flex-end; position:relative; bottom:80px; left:10px;">
+                        
                                                 <!-- 와이파이 아이콘 -->
-                                                <span class="material-symbols-outlined" style="margin-left:140px; font-size: 20px;">
+                                                <span class="material-symbols-outlined" style="margin-left:50px; font-size: 20px;">
                                                     wifi
                                                 </span>
                                                 <!-- 배터리 아이콘 -->
@@ -281,11 +629,10 @@
                                                     battery_horiz_075
                                                 </span>
                                                 <!-- 배터리 퍼센트 -->
-                                                <div style="font-size: 14px; margin-left: 3px; margin-top: 5px; position:relative; bottom:5px;">75%</div>
-                                                <!-- 스위치 -->
-                                                <span class="material-symbols-outlined" style="margin-left: 20px; font-size: 30px; position:relative; bottom:5px;">
-                                                    toggle_on
-                                                </span>
+                                                <div style="font-size: 14px; margin-left: 3px; margin-top: 5px; position:relative; bottom:5px; font-weight: 800;">75%</div>
+                                                <!-- 주행 상태 -->
+                                                <div class="card" style="margin-left:10px; width: 100px; height:20px; border-radius:1rem; background-color: rgba(182, 88, 0, 0.692); color:white; font-size: 11px; font-weight: 800; text-align: center;"> 자율주행 중 </div>
+
                                             </div>
                                         </div>
                                         <!-- 상세 내용 -->
@@ -308,6 +655,29 @@
                                                 </button> 
                                             </a>
                                         </div>
+
+                                        <div style="display: flex; justify-content: end; position:relative; bottom:155px; right:52px; z-index: 4;">    
+                                        <!-- 작업 play 버튼 -->
+                                            <a href=#>
+                                                <button type="button" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                                                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                                                    </svg>
+                                                </button> 
+                                            </a>
+                                        </div>
+
+                                        <div style="display: flex; justify-content: end; position:relative; bottom:188px; ">    
+                                        <!-- 작업 play 버튼 -->
+                                            <a href=#>
+                                                <button type="button" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
+                                                        <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </button> 
+                                            </a>
+                                        </div>
+                                            
                                     </div>
                                 </div>
                             </div>
@@ -318,8 +688,38 @@
 
         </div>
         <!-- 구글맵 도시 -->
-        <div class="content map_page">  
-            <div id="map" style="width: 100%; height: 98%"></div>
+        <div class="map_page">  
+            <!-- 경작지 제거 -->
+            <div style="position: absolute; z-index: 3;">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" style=" --bs-btn-border-radius: 0rem; width: 25px; height: 123px; position: relative; right:25px; padding: 2px;;">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">
+                        delete
+                    </span>
+                </button>
+            </div>
+            <!-- 경작지 제거 모달 -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title fs-5" id="exampleModalLabel">경고</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        경작지를 정말로 제거하시겠습니까?
+                        </div>
+                        &nbsp;
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+                            <a href="{% url 'farm:delete_farmfield' %}">
+                                <button type="button" class="btn btn-outline-danger">경작지 제거</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="map" style="width: 100%; height: 613px"></div>
         </div>
 
         <script>
@@ -339,12 +739,49 @@
                     mapTypeId: google.maps.MapTypeId.HYBRID,
                 };
                 var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                var geocoder = new google.maps.Geocoder();
+
+                geocoder.geocode({ 'location': locationLatLng }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[0]) {
+                        var formattedAddress = results[0].formatted_address.slice(5);
+                        var loc_element = document.getElementById('now_loc');
+                        loc_element.innerHTML = '<div style="white-space:nowrap; font-size:18px; color:black; flex:7;">주간예보 <span style="transform: rotate(180deg); position:relative; top:5px; color:rgb(174, 174, 174);" class="material-symbols-outlined">error</span> </div>' + '<div style="flex:1; white-space:nowrap; margin-top:-8px;">' + formattedAddress + '<span class="material-symbols-outlined" style="margin-left:2px; position:relative; top:5px;">location_on</span></div>'
+                    } else {
+                        
+                    }
+                } else {
+                    
+                }
+            });
                 
             }
             // 맵을 초기화하는 함수를 호출합니다.
             window.onload = function() {
             initMap();
             };
+            var accordionButton = document.querySelector('.accordion-button');
+
+            // 아코디언이 펼쳐진 상태인지 확인
+            function isAccordionExpanded() {
+                return accordionButton.classList.contains('collapsed') === false;
+            }
+
+            function applyShadowBasedOnAccordionState() {
+                
+                if (isAccordionExpanded()) {
+                    accordionButton.style.boxShadow = '0 5px 5px rgba(0, 0, 0, 0.3)';
+                } else {
+                    accordionButton.style.boxShadow = 'none';
+                }
+            }
+
+            // 페이지 로드시 초기 적용
+            applyShadowBasedOnAccordionState();
+
+            // 아코디언 상태 변화 감지 및 그림자 적용
+            accordionButton.addEventListener('click', applyShadowBasedOnAccordionState);
+
         </script>
         <script type="text/javascript" src="{% static 'js/card.js' %}"></script>
     </main>  

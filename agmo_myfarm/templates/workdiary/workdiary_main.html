@@ -15,7 +15,7 @@
   
   .rightBody{
 
-    background-color: rgb(245, 245, 236);
+    background-color:white;
     width: 781px;
     height: 100%;
     display: inline-block;
@@ -24,9 +24,10 @@
   .leftBody{
     width: 748px;
     height: 618px;
-    background-color: #f0f0f0; padding: 10px; border: 2px solid #ccc;
+    background-color: #f8f6f6; padding: 10px; border: 2px solid #ccc;
     border-radius: 25px;
     margin-left:2px;
+    margin-top: 8px;
     border: 2px solid gray; /* 2px 실선 테두리를 검은색으로 지정 */
     display: inline-block;
   }
@@ -39,7 +40,7 @@
   #calendar {
     
     margin-top:90px;
-    margin-left: 15px;
+    
     display: flex;
     flex-wrap: wrap;
     gap: 0px; /* 날짜 사이의 간격을 설정합니다. */
@@ -47,10 +48,13 @@
   .day {
     font-weight: bold;
     display: inline-block;
-    width: 103px;
+    width: 105.77px;
     height: 105px;
-    text-align: center;
+    text-align: left;
     cursor: pointer;
+    border: 1px solid #eaeaea;
+    padding-left: 8px;
+    padding-top: 6px;
   }
   
   .fieldRecord{
@@ -58,8 +62,9 @@
     border-radius: 15px;
     margin-top:10px;
     margin-left: 3px;
-    border: 2px solid #274131; /* 2px 실선 테두리를 검은색으로 지정 */
+    border: 2px solid black; /* 2px 실선 테두리를 검은색으로 지정 */
     display: inline-block;
+    background-color: white;
   }
   p {
     line-height: 1;
@@ -77,8 +82,8 @@
   }
   .material-symbols-outlined{
     margin-left: 8px;
-    margin-top: 7px;
-    font-size: 30px;
+    margin-top: 11px;
+    font-size: 20px;
   }
   </style>
   </head>
@@ -95,7 +100,7 @@
   <div style="display:flex;">
     <div class="rightBody">
       <div style="display:flex">
-        <p style="font-size: 40px;font-weight: bold;margin-top: 50px;text-decoration: underline;margin-left:56px">FEBRUARY,</p>
+        <p style="font-size: 40px;font-weight: bold;margin-top: 50px;text-decoration: underline;margin-left:56px">FEBRUARY</p>
         <p style="font-size: 40px;font-weight:bold;margin-top: 50px;margin-left:20px">2024</p>
       </div>
       <div id="calendar"></div>
@@ -133,28 +138,22 @@
             for (let j = 0; j < data.length; j++) {
                 const work = data[j];
                 workInfo.innerHTML += `
-                <div class="fieldRecord">
+                <div class="fieldRecord card">
                   <div style="display:flex">
-                    <p class="bold" style="font-size: 24px;margin-left:8px;margin-top:2px"> ${work.field_name}</p>
+                    <p class="bold" style="font-size: 18px;margin-left:8px;margin-top:8px"> ${work.field_name}</p>
                     ${work.machine_name === '파종기' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">wrist</span>' :
                     work.machine_name === '써레' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">auto_towing</span>' :
                     work.machine_name === '스프레이어' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">sprinkler</span>' : ''}
-                    <div class="progress" style="margin-left:8px; margin-top:7px;width:550px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress" style="margin-left:8px; margin-top:9px;width:490px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                       <div class="progress-bar bg-success" style="width: 25%">작업률: 25%</div>
                     </div>
-                    </div> 
+                    <button type="button" class="btn" style="height: 24px;margin-left:10px;color:rgb(0, 161, 49);  margin-top:3px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-radius: 0rem; border-bottom: 2px solid rgb(0, 161, 49);">
+                        <div style="font-size: 14px;font-weight:bold">작업편집</div>
+                    </button>
+                  </div> 
                   <p style="margin-left:8px;">작업 이름: ${work.work_name}</p>
                   <p style="margin-left:8px;">작물: ${work.crop}</p>
-                  <div class="flex">
-                    <div style="width:630px">
-                      <p style="margin-left:8px;margin-top:3px;">상세 메모: ${work.user_memo}</p>
-                    </div>
-                    <div>
-                      <button type="button" class="btn btn-outline-secondary" style="margin-bottom:5px;--bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 10px;margin-left:6px; border-width:2px; padding-bottom: 5px;">
-                        <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px;">작업편집</div>
-                      </button>
-                    </div>
-                  </div>
+                  <p style="margin-left:8px;margin-top:3px;">상세 메모: ${work.user_memo}</p>
                 </div>
             `;
             }
@@ -182,29 +181,22 @@
               for (let j = 0; j < data.length; j++) {
                 const work = data[j];
                 workInfo.innerHTML += `
-                <div class="fieldRecord">
+                <div class="fieldRecord card">
                   <div style="display:flex">
-                    <p class="bold" style="font-size: 24px;margin-left:8px;margin-top:2px"> ${work.field_name}</p>
+                    <p class="bold" style="font-size: 18px;margin-left:8px;margin-top:8px"> ${work.field_name}</p>
                     ${work.machine_name === '파종기' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">wrist</span>' :
                     work.machine_name === '써레' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">auto_towing</span>' :
                     work.machine_name === '스프레이어' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">sprinkler</span>' : ''}
-                    <div class="progress" style="margin-left:8px; margin-top:7px;width:550px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress" style="margin-left:8px; margin-top:9px;width:490px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                       <div class="progress-bar bg-success" style="width: 25%">작업률: 25%</div>
                     </div>
+                    <button type="button" class="btn" style="height: 24px;margin-left:10px;color:rgb(0, 161, 49);  margin-top:3px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-radius: 0rem; border-bottom: 2px solid rgb(0, 161, 49);">
+                        <div style="font-size: 14px;font-weight:bold">작업편집</div>
+                    </button>
                   </div> 
                   <p style="margin-left:8px;">작업 이름: ${work.work_name}</p>
                   <p style="margin-left:8px;">작물: ${work.crop}</p>
-                  
-                  <div class="flex">
-                    <div style="width:630px">
-                      <p style="margin-left:8px;margin-top:3px;">상세 메모: ${work.user_memo}</p>
-                    </div>
-                    <div>
-                      <button type="button" class="btn btn-outline-secondary" style="margin-bottom:5px;--bs-btn-padding-y: .0rem; --bs-btn-padding-x: .1rem; --bs-btn-border-radius: 10px;margin-left:6px; border-width:2px; padding-bottom: 5px;">
-                        <div style="font-size: 14px; font-weight: 800; display: inline-block; vertical-align: middle; line-height: 1; padding-top: 5px;">작업편집</div>
-                      </button>
-                    </div>
-                  </div>
+                  <p style="margin-left:8px;margin-top:3px;">상세 메모: ${work.user_memo}</p>
                 </div>
             `;
               }

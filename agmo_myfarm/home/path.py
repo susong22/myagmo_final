@@ -27,7 +27,8 @@ def get_coord(file_path):
     return result
 
 def calculate_paths():
-    agmo_data = get_coord("C:/Users/82105/Downloads/AGMO_Dataset1_output.xlsx")
+    agmo_data = get_coord("C:/Users/캐리어/song/myagmo/agmo_myfarm/AGMO_Dataset1_output.xlsx")
+    
     length = len(agmo_data)
 
     agmo_data_edit = agmo_data[:length//2]
