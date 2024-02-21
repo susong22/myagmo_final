@@ -19,6 +19,7 @@ function getCookie(name) {
 }
         
 let markers = [];
+let polylines = [];
 var startPoint; // 클릭한 시작점의 좌표를 저장할 변수
 var endPoint;
 let label_num;
@@ -70,14 +71,15 @@ function addMarker(map, location, label) {
 
     if (markers.length > 0) {
         let previousMarker = markers[markers.length - 1];
-        let line = new google.maps.Polyline({
+        line = new google.maps.Polyline({
             path: [previousMarker.position, marker.position],
             geodesic: true,
             strokeColor: '#FF0000',
             strokeOpacity: 1.0,
             strokeWeight: 2
         });
-        line.setMap(map); // setMap 메소드로 지도에 선을 추가합니다.
+        line.setMap(map);
+        polylines.push(line); // setMap 메소드로 지도에 선을 추가합니다.
     }
     
 
@@ -89,6 +91,7 @@ function addMarker(map, location, label) {
     // 사용자가 마커를 드래그하여 이동했을 때 마커 위치 업데이트
     marker.addListener("dragend", function(event) {
         updateMarker(this, event.latLng);
+        updateAllPolylines();
     });
     markers.push(marker);
     console.log(markers);
@@ -100,6 +103,31 @@ function addMarker(map, location, label) {
 function updateMarker(marker, location) {
     marker.setPosition(location);
 }
+
+function updateAllPolylines() {
+    // 기존 폴리라인 모두 제거
+    for (let i = 0; i < polylines.length; i++) {
+        polylines[i].setMap(null);
+    }
+    polylines = [];  // 배열 비우기
+
+    markers.forEach(function (marker, index) {
+        if (index > 0) {
+            let previousMarker = markers[index - 1];
+            let currentMarker = marker;
+            let line = new google.maps.Polyline({
+                path: [previousMarker.position, currentMarker.position],
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            line.setMap(map);  // 새로운 폴리라인 추가
+            polylines.push(line);  // 배열에 추가
+        }
+    });
+}
+
 
 // 마커들을 서버에 저장
 document.getElementById("subMarker").addEventListener("click", function() {
@@ -159,10 +187,13 @@ $.ajax({
 
 // 마커를 초기화
 document.getElementById("reset_marker").addEventListener("click", function() {
-    if (line) {
-        line.setMap(null);
-        line = null; // 폴리라인 객체 초기화
-    }
+
+    if (polylines.length != 0){
+        for (let i = 0; i < polylines.length; i++) {
+            polylines[i].setMap(null);
+        }}
+        polylines = [];
+
     markers.forEach(function(marker) {
         marker.setMap(null);  // 각 마커를 지도에서 제거
     });

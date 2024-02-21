@@ -22,13 +22,19 @@ var startLatLng, endLatLng;
 var startPoint; // 클릭한 시작점의 좌표를 저장할 변수
 var endPoint;
 let line;
+let polygon;
 
 function initMap() {
                     //맵 보여주는 함수
     var selectedOption = $('#farmSelect').find('option:selected');
     var locationString = selectedOption.data("loc");
+    var listString = selectedOption.data("obj");
+    // 지도 위치
     var loca = JSON.parse(locationString.replace(/'/g, '"'));
     var initialLatLng = new google.maps.LatLng(loca.lat, loca.lng);
+    // 경계선 위치
+    var fieldPaths = JSON.parse(listString.replace(/'/g, '"'));
+    console.log(fieldPaths);
 
     var mapOptions = {
         center: initialLatLng,
@@ -38,14 +44,39 @@ function initMap() {
     };
     let map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+    polygon = new google.maps.Polygon({
+        paths: fieldPaths,
+        strokeColor: '#FF0000', // 선 색상
+        strokeOpacity: 0.6, // 선 투명도
+        strokeWeight: 5, // 선 두께
+        fillColor: '#FFFFFF', // 내부 색상
+        fillOpacity: 0.2 // 내부 투명도
+    });
+    polygon.setMap(map);
 
     $('#farmSelect').change(function () {
+        if (polygon) {
+            polygon.setMap(null);
+        }
+
         var selectedOption = $(this).find('option:selected');
         var locationString = selectedOption.data("loc");
         
         var loca = JSON.parse(locationString.replace(/'/g, '"'));
         var locationLatLng = new google.maps.LatLng(loca.lat, loca.lng);;
         map.setCenter(locationLatLng);
+        
+        var listString = selectedOption.data("obj");
+        var fieldPaths = JSON.parse(listString.replace(/'/g, '"'));
+        polygon = new google.maps.Polygon({
+            paths: fieldPaths,
+            strokeColor: '#FF0000', // 선 색상
+            strokeOpacity: 0.6, // 선 투명도
+            strokeWeight: 5, // 선 두께
+            fillColor: '#FFFFFF', // 내부 색상
+            fillOpacity: 0.2 // 내부 투명도
+        });
+        polygon.setMap(map);
     });
     //polyline 그리기 위한 좌표값, 임의의 값임
 

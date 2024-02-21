@@ -40,7 +40,7 @@
   #calendar {
     
     margin-top:90px;
-    
+    margin-left: 15px;
     display: flex;
     flex-wrap: wrap;
     gap: 0px; /* 날짜 사이의 간격을 설정합니다. */
@@ -48,23 +48,12 @@
   .day {
     font-weight: bold;
     display: inline-block;
-    width: 105.77px;
+    width: 103px;
     height: 105px;
-    text-align: left;
-    cursor: pointer;
-    border: 1px solid #eaeaea;
-    padding-left: 8px;
+    padding-left: 10px;
     padding-top: 6px;
-  }
-  
-  .fieldRecord{
-    width: 711px;
-    border-radius: 15px;
-    margin-top:10px;
-    margin-left: 3px;
-    border: 2px solid black; /* 2px 실선 테두리를 검은색으로 지정 */
-    display: inline-block;
-    background-color: white;
+    
+    cursor: pointer;
   }
   p {
     line-height: 1;
@@ -85,6 +74,30 @@
     margin-top: 11px;
     font-size: 20px;
   }
+  .card{
+    margin-bottom: 10px;
+  }
+  .buttonfinish{
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+    height: 40px;
+    margin-top:10px;
+    
+  }
+  .complete{
+    background-color: #274131;
+    border-radius: 20px;
+    width:90px;
+    height: 44px;
+    padding: 10px;
+  }
+  .clicked {
+  background-color: rgba(180, 180, 180, 0.47);
+  
+}
+  
   </style>
   </head>
 
@@ -100,7 +113,7 @@
   <div style="display:flex;">
     <div class="rightBody">
       <div style="display:flex">
-        <p style="font-size: 40px;font-weight: bold;margin-top: 50px;text-decoration: underline;margin-left:56px">FEBRUARY</p>
+        <p style="font-size: 40px;font-weight: bold;margin-top: 50px;text-decoration: underline;margin-left:56px">FEBRUARY,</p>
         <p style="font-size: 40px;font-weight:bold;margin-top: 50px;margin-left:20px">2024</p>
       </div>
       <div id="calendar"></div>
@@ -109,8 +122,14 @@
     <div class="leftBody">
       <div>
         <div style="display: flex;">
-          <p style="font-size: 25px;margin-left: 10px;font-weight: bold;margin-top: 10px;">2024.2.</p>
-          <div style="font-size: 25px;margin-top:10px;" id="leftBody"></div>
+          <div style="width: 50%;display: flex;">
+            <span class="material-symbols-outlined"style="margin-top: 15px;font-size:30px;">receipt_long</span>
+            <p style="font-size: 25px;margin-left: 10px;font-weight: bold;margin-top: 15px;">2024.2.</p>
+            <div style="font-size: 25px;margin-top:15px;" id="leftBody"></div> 
+          </div>
+          <div class="buttonfinish">
+            <button class="complete" id="button"style="font-weight:bold;color:white;height: 37px;padding-top: 7px;opacity: 0.9;border-width: 0;">작업완료</div>
+          </div>
         </div>
         <hr>
         <div class="downBody">
@@ -120,9 +139,22 @@
     </div>
 
   <script>
-    // 달력을 만들고 날짜에 클릭 이벤트를 추가합니다.
     const calendar = document.getElementById('calendar');
     const workInfo = document.getElementById('workInfo');
+    const button = document.getElementById('button');
+  
+    function getToday() {
+      const now = new Date();
+      return now.getDate(); // 오늘 날짜 반환 (1부터 31까지의 숫자)
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = getToday();
+      const todayElement = document.querySelector(`.day:nth-child(${today})`);
+      if (todayElement) {
+        todayElement.classList.add('clicked');
+      }
+    });
+
     leftBody.innerHTML=`<p class="bold">{{ today_day }}</p>`
     //페이지에 처음 들어왔을때 오늘거 표시하게 하기 위함.
     fetch(`workinfo?date={{ today_day }}`)
@@ -137,17 +169,23 @@
             // 받은 데이터를 화면에 표시
             for (let j = 0; j < data.length; j++) {
                 const work = data[j];
+                let classToAdd = 'card';
+                let progressDisplay = '';
+                if (work.status === 'past') {
+                  classToAdd = 'card text-bg-secondary opacity-75';
+                  progressDisplay = 'none';
+                }
                 workInfo.innerHTML += `
-                <div class="fieldRecord card">
+                <div class="${classToAdd}">
                   <div style="display:flex">
                     <p class="bold" style="font-size: 18px;margin-left:8px;margin-top:8px"> ${work.field_name}</p>
                     ${work.machine_name === '파종기' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">wrist</span>' :
                     work.machine_name === '써레' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">auto_towing</span>' :
                     work.machine_name === '스프레이어' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">sprinkler</span>' : ''}
-                    <div class="progress" style="margin-left:8px; margin-top:9px;width:490px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress" style="display:${progressDisplay};margin-left:8px; margin-top:9px;width:490px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                       <div class="progress-bar bg-success" style="width: 25%">작업률: 25%</div>
                     </div>
-                    <button type="button" class="btn" style="height: 24px;margin-left:10px;color:rgb(0, 161, 49);  margin-top:3px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-radius: 0rem; border-bottom: 2px solid rgb(0, 161, 49);">
+                    <button type="button" class="btn" style="height: 25px;margin-left:10px;color:white;  margin-top:3px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-r;adius: 0rem; border-bottom: 2px solid white">
                         <div style="font-size: 14px;font-weight:bold">작업편집</div>
                     </button>
                   </div> 
@@ -156,10 +194,10 @@
                   <p style="margin-left:8px;margin-top:3px;">상세 메모: ${work.user_memo}</p>
                 </div>
             `;
+            
             }
+        
         })
-        .catch(error => console.error('Error:', error));
-
     // 달력을 채워넣는 함수
       for (let i = 1; i <= 28; i++) { // 간단하게 28일만 추가
         const day = document.createElement('div');
@@ -178,19 +216,33 @@
             .then(data => {
               // 받은 데이터를 화면에 표시
               workInfo.innerHTML = ''; // 기존의 작업 정보를 초기화
+              
               for (let j = 0; j < data.length; j++) {
                 const work = data[j];
+                let classToAdd = 'card';
+                let eddit='';
+                let progressDisplay = '';
+                if (work.status === 'past') {
+                  classToAdd = 'card text-bg-secondary opacity-75';
+                  progressDisplay = 'none';
+                }
+                else if(work.status==='future'){
+                  classToAdd='card opacity-75';
+                  progressDisplay = 'none';
+                  eddit='none';
+            
+                }
                 workInfo.innerHTML += `
-                <div class="fieldRecord card">
+                <div class="${classToAdd}">
                   <div style="display:flex">
                     <p class="bold" style="font-size: 18px;margin-left:8px;margin-top:8px"> ${work.field_name}</p>
                     ${work.machine_name === '파종기' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">wrist</span>' :
                     work.machine_name === '써레' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">auto_towing</span>' :
                     work.machine_name === '스프레이어' ? '<span class="material-symbols-outlined" style="z-index: 2; position:relative; bottom:5px;">sprinkler</span>' : ''}
-                    <div class="progress" style="margin-left:8px; margin-top:9px;width:490px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress" style="display:${progressDisplay};margin-left:8px; margin-top:9px;width:490px" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                       <div class="progress-bar bg-success" style="width: 25%">작업률: 25%</div>
                     </div>
-                    <button type="button" class="btn" style="height: 24px;margin-left:10px;color:rgb(0, 161, 49);  margin-top:3px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-radius: 0rem; border-bottom: 2px solid rgb(0, 161, 49);">
+                    <button type="button" class="btn" style="height: 25px;margin-left:10px;color:white;  margin-top:3px; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-border-r;adius: 0rem; border-bottom: 2px solid white">
                         <div style="font-size: 14px;font-weight:bold">작업편집</div>
                     </button>
                   </div> 
@@ -202,11 +254,60 @@
               }
             })
             .catch(error => console.error('Error:', error));
+            const clickedDay = document.querySelector('.day.clicked');
+            if (clickedDay) {
+            clickedDay.classList.remove('clicked');
+            }
+        day.classList.add('clicked');
         });
+        
         calendar.appendChild(day);
       }
-      // 페이지 로드 시 달력을 채웁니다.
-      fillCalendar();
+
+      function getCSRFToken() {
+    let csrftoken = null;
+    // 쿠키에서 CSRF 토큰 가져오기
+    const cookieArray = document.cookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        const cookie = cookieArray[i].trim();
+        // 쿠키 이름이 'csrftoken'인 것 찾기
+        if (cookie.startsWith('csrftoken=')) {
+            csrftoken = cookie.substring('csrftoken='.length, cookie.length);
+            break;
+        }
+    }
+    // 만약 쿠키에 없다면, 다른 곳에서 가져오기 또는 에러 처리
+    if (!csrftoken) {
+        // 다른 곳에서 CSRF 토큰 가져오는 방법 추가 또는 에러 처리
+    }
+    return csrftoken;
+}
+
+
+button.addEventListener('click', () => {
+    const csrftoken = getCSRFToken(); // CSRF 토큰 가져오기
+    fetch(`/workdiary/update/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken, // CSRF 토큰 추가
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.result == "change") {
+            alert('작업 상태를 업데이트하였습니다.');
+            window.location.reload();
+        } else {
+          alert('오늘 작업이 이미 완료되었습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('작업 상태를 업데이트하는 데 실패했습니다.');
+    })
+})
+
   </script>
 
 

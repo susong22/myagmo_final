@@ -13,7 +13,8 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 class WorkDiary(TimeStampedModel):
-    selected_date = models.DateField()
+    fin_date = models.IntegerField(default=0, null=True)
+    is_complete =models.BooleanField(default=False)
 
     workdiary_work_detail = models.ForeignKey(
         work_model.Works, 

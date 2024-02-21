@@ -27,6 +27,7 @@ class FarmField(models.Model):
     
     field_name = models.CharField(blank=True, max_length=255, unique=True)
     location = models.JSONField(null=True)
+    location_list = models.JSONField(null=True)
     location_name_detail = models.CharField(null=True)
     crop = models.JSONField(null=True)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것

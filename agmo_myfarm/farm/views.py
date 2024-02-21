@@ -33,6 +33,8 @@ def add_farmfield(request):
 
             if formset.is_valid():
                 session_data = request.session.get('field_point', None)
+                session_data2 = request.session.get('marker_coordinates', None)
+                
                 if session_data is not None and session_data[1] > 0 and session_data[3] > 0:
                     try:
                         point = {
@@ -48,10 +50,10 @@ def add_farmfield(request):
                         new_farm = formset.save()
                         new_farm.is_selected = True
                         new_farm.location = point
+                        new_farm.location_list = session_data2
                         new_farm.crop = []
                         new_farm.save()
                         print('add_farmfield 폼이 저장되었습니다!')  
-                        print(new_farm.location) 
                         return redirect('work:main')
                     except IntegrityError:
                         print('경작지 이름이 중복됩니다.')
@@ -121,6 +123,7 @@ def save_markers(request):
         session_data = (x_sum, x_count, y_sum, y_count)
 
         request.session['field_point'] = session_data
+        request.session['marker_coordinates'] = marker_coordinates
         response_data = {'data': session_data}
 
         return JsonResponse(response_data)

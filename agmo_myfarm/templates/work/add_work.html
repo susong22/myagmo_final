@@ -48,13 +48,13 @@
     
     <header>
         <!-- 헤더 고정 -->
-        {% include 'work/header.html' with content=farm_list %}
+        {% include 'workdiary/header.html' %}
     </header>
 
     <main>
 
         <div class="machine_page" id="yourFormContainer">
-            <div class="card border-secondary mb-3" style="max-width: 30rem; height: 36rem; margin: 10px; border: none;">
+            <div class="card border-secondary mb-3" style="max-width: 30rem; height: 39.5rem; margin: 10px; border: none;">
                 
                 <div class="card-header" style="font-size: 20px; font-weight: bold; display: flex;">
                     <div style="flex:12;">
@@ -90,7 +90,7 @@
                             </div>
                             <select id="farmSelect" class="form-select" name="work_fields" style="width: 200px; height: 30px; padding: 2px;">
                                     {% for farmfield in farmfield_list %}
-                                        <option value="{{ farmfield.id }}" data-loc="{{ farmfield.location }}">{{ farmfield.field_name }}</option>
+                                        <option value="{{ farmfield.id }}" data-loc="{{ farmfield.location }}" data-obj="{{ farmfield.location_list }}">{{ farmfield.field_name }}</option>
                                     {% endfor %}
                             </select>
                         </div>
@@ -191,12 +191,12 @@
                             </div>
                         </div>
 
-                        <!--  경로 설정  -->
-                        <div style="display: flex; margin-top: 30px; margin-left: 10px; color:black; font-weight: 800;">
-                            <div style="margin-right: 10px; white-space: nowrap;">
-                                경로 설정
+                        <!--  주행경로 설정  -->
+                        <div style="display: flex; margin-top: 20px; margin-left: 0px; margin-right:20px; color:black; font-weight: 800;">
+                            <div style="margin-right: 10px; text-align: center;">
+                                주행경로 설정
                             </div>
-                            <div style="font-weight: 100; color:#8f8787; margin-top: 10px; margin-right:10px; margin-left:10px; white-space: nowrap;">
+                            <div style="font-weight: 100; color:#8f8787; margin-top: 10px; margin-right:10px; margin-left:20px; white-space: nowrap;">
                                 &nbsp;&nbsp;시작점 설정
                             </div>
                             <button class="btn btn-outline-secondary" type="button" id="create_startpoint_button" style="color:red">

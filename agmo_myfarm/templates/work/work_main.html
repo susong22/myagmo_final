@@ -727,10 +727,16 @@
             var decodedString = new DOMParser().parseFromString('<!doctype html><body>' + field_string, 'text/html').body.textContent;
             var obj = JSON.parse(decodedString.replace(/'/g, '"'));
             var locationLatLng = new google.maps.LatLng(obj.lat, obj.lng);
-            console.log(locationLatLng)
+            
+            var loc_list = "{{ wea.location_list }}";
+            var decodedString2 = new DOMParser().parseFromString('<!doctype html><body>' + loc_list, 'text/html').body.textContent;
+            var fieldPaths = JSON.parse(decodedString2.replace(/'/g, '"'));
+
+            // 이제 fieldPaths를 사용하여 구글맵 polygon의 paths로 전달할 수 있습니다.
 
             // 맵을 초기화하고 표시하는 스크립트 부분
             function initMap() {
+                
                 var mapOptions = {
                     center: locationLatLng,
                     
@@ -750,9 +756,16 @@
                     } else {
                         
                     }
-                } else {
-                    
-                }
+                } 
+                var polygon = new google.maps.Polygon({
+                    paths: fieldPaths,
+                    strokeColor: '#FF0000', // 선 색상
+                    strokeOpacity: 0.6, // 선 투명도
+                    strokeWeight: 5, // 선 두께
+                    fillColor: '#FFFFFF', // 내부 색상
+                    fillOpacity: 0.2 // 내부 투명도
+                });
+                polygon.setMap(map);
             });
                 
             }
