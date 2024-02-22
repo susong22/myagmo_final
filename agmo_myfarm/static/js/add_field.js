@@ -1,5 +1,5 @@
 window.onload = function() {
-    initMap({lat: 36.2808, lng: 127.1426});
+    initMap({lat: 37.49083912059785, lng: 127.03015666459967});
 };
         
 function getCookie(name) {
@@ -37,7 +37,7 @@ function initMap(location) {
         //맵 보여주는 함수
     var mapOptions = {
         center: location,
-        zoom: 20,
+        zoom: 18,
         mapTypeControl: false,
         mapTypeId: google.maps.MapTypeId.HYBRID,
     };

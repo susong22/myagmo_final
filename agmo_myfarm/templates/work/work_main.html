@@ -95,6 +95,12 @@
             left: 45%
             /* 다른 위치 및 스타일링을 원하는 대로 조정 */
         }
+        .autonomous-driving {
+        background-color: #4b765b; /* 녹색 */
+        }
+        .stop {
+        background-color: #9b3a33; /* 빨간색 */
+        }
         
 
     </style>
@@ -631,16 +637,20 @@
                                                 <!-- 배터리 퍼센트 -->
                                                 <div style="font-size: 14px; margin-left: 3px; margin-top: 5px; position:relative; bottom:5px; font-weight: 800;">75%</div>
                                                 <!-- 주행 상태 -->
-                                                <div class="card" style="margin-left:10px; width: 100px; height:20px; border-radius:1rem; background-color: rgba(182, 88, 0, 0.692); color:white; font-size: 11px; font-weight: 800; text-align: center;"> 자율주행 중 </div>
+                                                <div class="stop" id="statusDisplay" style="margin-left:10px; width: 100px; height:20px; border-radius:1rem; color:white; font-size: 11px; font-weight: 800; text-align: center;">
+                                                    정지
+                                                </div>
 
                                             </div>
                                         </div>
                                         <!-- 상세 내용 -->
-                                        
-                                        <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 12px; font-weight: 800; position:relative; bottom:60px;">작업기간: {{card.start_date_year}}/{{card.start_date_month}}/{{card.start_date_day}} ~ {{card.end_date_year}}/{{card.end_date_month}}/{{card.end_date_day}}</h6>
+                                        <div style="display: flex;">
+                                            <h6 class="card-subtitle mb-2 text-body-secondary" style="margin-top: 8px; font-size: 12px; font-weight: 800; position:relative; bottom:60px;">작업기간: {{card.start_date_year}}/{{card.start_date_month}}/{{card.start_date_day}} ~ {{card.end_date_year}}/{{card.end_date_month}}/{{card.end_date_day}}</h6>
+                                            <div id="expected_hour" style="font-weight: bold;margin-left: 45px;margin-top: 7.5px; font-size: 12px; font-weight: 800; position:relative; bottom:60px;color: rgb(77, 77, 77);">예상시간: 0분</div>
+                                        </div>
                                         <div style="display: flex;">
                                             <div class="progress" style="position:relative; bottom:54px; flex:3;" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                <div class="progress-bar bg-success" style="width: 25%">작업률: 25%</div>
+                                                <div class="progress-bar bg-success" id="progress" style="width: 25%">작업률: 0%</div>
                                             </div>
                                             <div style="flex:1;"></div>
                                         </div>
@@ -659,28 +669,29 @@
                                         <div style="display: flex; justify-content: end; position:relative; bottom:155px; right:52px; z-index: 4;">    
                                         <!-- 작업 play 버튼 -->
                                             <a href=#>
-                                                <button type="button" onclick="startSimulation()" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                <button type="button" id="startBut" onclick="startSimulation()" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
                                                         <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
                                                     </svg>
                                                 </button> 
                                             </a>
                                         </div>
-
+                                        
                                         <div style="display: flex; justify-content: end; position:relative; bottom:188px; ">    
                                         <!-- 작업 pause 버튼 -->
                                             <a href=#>
                                                 <button type="button" onclick="toggleSimulation()" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16" style="margin-right: 0;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="-4 0 16 16" style="margin-right: 0;">
                                                         <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
                                                     </svg>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="4 0 16 16">
                                                         <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5"/>
                                                     </svg>
                                                 </button> 
                                             </a>
                                         </div>
                                         <div id="progress"></div>
+                                        
                                             
                                     </div>
                                 </div>
@@ -786,7 +797,8 @@
                     strokeColor: '#FF0000', // 선 색상
                     strokeOpacity: 0.6, // 선 투명도
                     strokeWeight: 5, // 선 두께
-                    
+                    fillColor: '#000000',
+                    fillOpacity: 0.1,
                 });
                 polygon.setMap(map);                
                 });
@@ -830,6 +842,9 @@
             function stopSimulation() {
                 clearInterval(intervalId); // 시뮬레이션 중지
                 simulationRunning = false;
+                var statusDisplay = document.getElementById("statusDisplay");
+                statusDisplay.classList.add("stop");
+                statusDisplay.textContent = "정지";
             }
 
             function updatePath() {
@@ -850,8 +865,9 @@
                         var marker = markers[markers.length - 1];
                         marker.setPosition(new google.maps.LatLng(traveled_path[traveled_path.length - 1][0], traveled_path[traveled_path.length - 1][1]));
                         marker.setIcon({
-                            url: 'https://cdn-icons-png.flaticon.com/512/2548/2548747.png',
-                            scaledSize: new google.maps.Size(35, 35)
+                            url: 'https://cdn-icons-png.flaticon.com/512/10274/10274087.png',
+                            scaledSize: new google.maps.Size(35, 35),
+                            anchor: new google.maps.Point(17.5, 15)
                         });
                         console.log(markers);
                     } else {
@@ -866,6 +882,11 @@
                                 fillOpacity: 1,
                                 strokeWeight: 0
                             }
+                        });
+                        marker.setIcon({
+                            url: 'https://cdn-icons-png.flaticon.com/512/10274/10274087.png',
+                            scaledSize: new google.maps.Size(35, 35),
+                            anchor: new google.maps.Point(17.5, 15)
                         });
                         markers.push(marker);
                     }
@@ -923,20 +944,48 @@
                         console.log(lastAngle);
                     }
                     updateProgress(); // 진행률 업데이트
+
+                    var statusDisplay = document.getElementById("statusDisplay");
+                    
+                    if (simulationRunning) {
+                        statusDisplay.classList.remove("stop"); // 정지 클래스 제거
+                        if (!statusDisplay.classList.contains("autonomous-driving")) {
+                        statusDisplay.classList.add("autonomous-driving");
+                        }
+                        statusDisplay.textContent = "자율주행 중";
+                    } else {
+                        statusDisplay.classList.remove("autonomous-driving"); // 자율주행 클래스 제거
+                        if (!statusDisplay.classList.contains("stop")) {
+                            statusDisplay.classList.add("stop");
+                        }
+                        
+                        statusDisplay.textContent = "정지";
+                    }
+                    
                     
                 } else {
                     clearInterval(intervalId); // expected_path가 더 이상 없을 때 인터벌 정지
                 }
             }
+            
             function updateProgress() {
-                progress = (traveled_path.length / (expected_path.length + traveled_path.length)) * 100;
-                console.log(progress);
-                progress = Math.floor(progress); // 소수점 이하 부분을 제거하여 정수로 변환
-                expected_hour = expected_path.length * 2.5 /0.4 / 60;
-                expected_hour = Math.floor(expected_hour);
+                var progressValue = (traveled_path.length / (expected_path.length + traveled_path.length)) * 100;
+                progressValue = Math.floor(progressValue); // 소수점 이하 부분을 제거하여 정수로 변환
                 const progressBar = document.getElementById("progress");
-                progressBar.innerText = "Progress: " + progress + "%" + "  " + "예상시간: " + expected_hour + "분";
+                progressBar.innerText = "진행률: " + progressValue + "%";
+                progressBar.style.width = progressValue + "%"; // progress bar의 너비를 설정
+
+                // 예상 시간 계산 및 할당
+                var expectedHourValue = expected_path.length * 2.5 / 0.4 / 60;
+                expectedHourValue = Math.floor(expectedHourValue);
+                const expectedHour = document.getElementById("expected_hour");
+                expectedHour.innerText = "예상시간: " + expectedHourValue + "분";
             }
+
+            var startBut = document.getElementById('startBut');
+            startBut.addEventListener('click', function() {    
+                startBut.disabled = true;
+            })
 
 
 

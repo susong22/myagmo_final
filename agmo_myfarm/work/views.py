@@ -214,7 +214,7 @@ def weather_obj():
             url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
             key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
              # 20240203
-            date = str(current_year) + str(current_month).zfill(2) + str(current_day).zfill(2)
+            date = str(current_year) + str(current_month).zfill(2) + str(current_day-1).zfill(2)
             time = '0200'      # 0200부터 3시간 단위
             place = [55, 127]   # 위도, 경도    <- 다른 def 에서 불러와야함
 
@@ -330,7 +330,7 @@ def weather_obj():
         url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
         key = 'SlNT2UPLHyxPS1CHGdrY+oqL9cW0Y1WqeXzYEGT8LavFpbmcM1JNhXE8GZtZkggouJQgGddzzfVAjjnI89dIiA=='
         #date = '20240207'      # 20240203
-        date = str(current_year) + str(current_month).zfill(2) + str(current_day).zfill(2)
+        date = str(current_year) + str(current_month).zfill(2) + str(current_day-1).zfill(2)
         time = '0200'      # 0200부터 3시간 단위
         place = [55, 127]   # 위도, 경도    <- 다른 def 에서 불러와야함
         para = {

@@ -5,6 +5,7 @@ from .path3 import calculate_paths3
 from .path4 import calculate_paths4
 import json
 from django.http import JsonResponse
+from farm.models import FarmField
 
 #1번
 def index(request):
@@ -17,6 +18,7 @@ def index(request):
     roll_data_future_json = json.dumps(roll_data_future.tolist())
     pitch_data_past_json = json.dumps(pitch_data_past.tolist())
     pitch_data_future_json = json.dumps(pitch_data_future.tolist())
+    farm_list = FarmField.objects.all()
 
     return render(request, 
                   'home/index.html', 
@@ -25,7 +27,9 @@ def index(request):
                    'roll_data_past_json': roll_data_past_json,
                    'roll_data_future_json': roll_data_future_json,
                    'pitch_data_past_json': pitch_data_past_json,
-                   'pitch_data_future_json': pitch_data_future_json}
+                   'pitch_data_future_json': pitch_data_future_json,
+                    'farm_list':farm_list,
+                   }
                   )
 
 #2번

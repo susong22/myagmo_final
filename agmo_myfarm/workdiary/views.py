@@ -6,6 +6,7 @@ from datetime import datetime
 from .models import WorkDiary
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest
+import json
 
 
 def main(request):
@@ -78,3 +79,23 @@ def work_info_view(request):
             return JsonResponse({'error': '작업 정보를 찾을 수 없습니다.'}, status=404)
     else:
         return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)
+    
+
+def alert_map(request):
+    response_body = {"result": ""}
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        name = data.get('result', [])
+        work_objects = Works.objects.filter(work_fields__field_name=name)
+        print(work_objects)
+        # 날짜가 다르면  -> 그날 처음 완료하는거면
+        if 1:
+            
+            response_body["result"] = "change"
+            return JsonResponse(status=200, data=response_body)
+        else:
+            response_body["result"] = "same"
+            return JsonResponse(status=200, data=response_body)
+    
+    # POST 요청이 들어왔지만 작업 상태 업데이트에 실패한 경우
+    return JsonResponse({'error': 'dasdfsdf.'}, status=500)
