@@ -126,7 +126,10 @@ def soil(request):
 def solution(request):
     today_day = timezone.now().day
     farm_list = FarmField.objects.all()
+    farm_selected=FarmField.objects.filter(is_selected=True)[0]
+    farm_name=farm_selected.field_name
     content={
+        'farm_name':farm_name,
         'today_day': today_day,
         'farm_list':farm_list,
     }

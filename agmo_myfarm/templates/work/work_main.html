@@ -690,7 +690,7 @@
                                                 </button> 
                                             </a>
                                         </div>
-                                        <div id="progress"></div>
+                                        
                                         
                                             
                                     </div>
@@ -981,12 +981,14 @@
                 const expectedHour = document.getElementById("expected_hour");
                 expectedHour.innerText = "예상시간: " + expectedHourValue + "분";
             }
-
+                
             var startBut = document.getElementById('startBut');
-            startBut.addEventListener('click', function() {    
-                startBut.disabled = true;
-            })
-
+            if (startBut) {
+                startBut.addEventListener('click', function() {    
+                    startBut.disabled = true;
+                })
+            }
+        
 
 
 //   -----------------------------------------------------------------------------------------------------------------
