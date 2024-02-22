@@ -71,6 +71,7 @@ def work_info_view(request):
                         'work_name': work_record.work_name,
                         'crop': work_record.work_fields.crop,
                         'user_memo': work_record.user_memo,
+                        'turn_over': work_record.turn_over,
                     })
             return JsonResponse(data, safe=False)
         except Works.DoesNotExist:

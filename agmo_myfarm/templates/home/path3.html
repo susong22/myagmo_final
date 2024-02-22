@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <title>Google Maps Example</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <style>
+        #map {
+            height: 450px;
+            width: 100%;
+        }
+        .map-container{
+            margin-top: 20px;
+            width: 80%;
+            height: 40vh;
+            margin: 0 auto;
+        }
+        .button_style{
+            padding:2px; 
+            border-radius: 15px;
+            margin-top: 19px;
+        }
+        button:hover{
+            background-color: #d3d3d3;
+        }
+    </style>
+</head>
+</head>
+<body>
+    <header>
+        <!-- 헤더 고정 -->
+        {% include 'work/header.html' %}
+    </header>
+    <div class="map-container">
+        <div style="display: flex;">
+            <div style="width: 105%; display: flex;">
+                <img src="https://cdn-icons-png.flaticon.com/128/2892/2892009.png" style="width: 59px;">
+                <div>
+                    <p style="margin-top: 19px; margin-left: 22px;font-weight: bold;font-size: 20px;">트랙터 주행 현황</p>
+                </div>
+            </div>
+            <div style="width: 35%;">
+                <button class="button_style" onclick="startSimulation()">주행시작</button>
+                <button class="button_style" onclick="toggleSimulation()">주행/정지</button>
+            </div>
+        </div>
+        <div id="map"></div>
+    </div>
+    
+    
+    <script>
+        var map;
+        var markers = [];
+        var traveled_path = JSON.parse('{{ traveled_path_json|escapejs }}');
+        var expected_path = JSON.parse('{{ expected_path_json|escapejs }}');
+        var intervalId;
+        var traveled_path_polyline; // 전역 변수로 선언
+        var expected_path_polyline;
+        var traveled_path_coords;
+        var expected_path_coords;
+        var simulationRunning = false;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 36.299324, lng: 127.15977}, // 초기 중심 좌표 설정
+                zoom: 25, // 초기 줌 레벨 설정
+                mapTypeControl: false,
+                mapTypeId: google.maps.MapTypeId.SATELLITE
+            });
+
+            var traveled_path_coords = traveled_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+            var expected_path_coords = expected_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+
+            // 폴리라인 그리기
+            traveled_path_polyline = new google.maps.Polyline({
+                path: traveled_path_coords,
+                geodesic: true,
+                strokeColor: '#FFCC00', // 노란색
+                strokeOpacity: 1.0,
+                strokeWeight: 4
+            });
+            traveled_path_polyline.setMap(map);
+
+            expected_path_polyline = new google.maps.Polyline({
+                path: expected_path_coords,
+                geodesic: true,
+                strokeColor: '#C0C0C0', // 흰색
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            expected_path_polyline.setMap(map);
+        }
+
+        function startSimulation() {
+            intervalId = setInterval(updatePath, 1000); // 1초 간격으로 예상 경로를 주행
+            simulationRunning = true;
+        }
+
+        function toggleSimulation() {
+            if (simulationRunning) {
+                stopSimulation();
+            } else {
+                startSimulation();
+            }
+        }
+
+        function stopSimulation() {
+            clearInterval(intervalId); // 시뮬레이션 중지
+            simulationRunning = false;
+        }
+        function updatePath() {
+            if (expected_path.length > 0) {
+                // traveled_path의 마지막 좌표를 expected_path의 첫 좌표로 이동
+                traveled_path.push(expected_path[0]);
+                // expected_path의 첫 좌표 삭제
+                expected_path.shift();
+
+                // 마지막 마커를 업데이트
+                if (markers.length > 0) {
+                    var marker = markers[markers.length - 1];
+                    marker.setPosition(new google.maps.LatLng(traveled_path[traveled_path.length - 1][0], traveled_path[traveled_path.length - 1][1]));
+                    marker.setIcon({
+                        url: 'https://cdn-icons-png.flaticon.com/512/2548/2548747.png',
+                        scaledSize: new google.maps.Size(35, 35)
+                    });
+                } else {
+                    // 처음 마커 생성
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(traveled_path[traveled_path.length - 1][0], traveled_path[traveled_path.length - 1][1]),
+                        map: map,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 4,
+                            fillColor: '#FFCC00', // 노란색
+                            fillOpacity: 1,
+                            strokeWeight: 0
+                        }
+                    });
+                    markers.push(marker);
+                }
+
+                // 폴리라인 업데이트
+                var traveled_path_coords = traveled_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+                var expected_path_coords = expected_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+                traveled_path_polyline.setPath(traveled_path_coords);
+                expected_path_polyline.setPath(expected_path_coords);
+            } else {
+                clearInterval(intervalId); // expected_path가 더 이상 없을 때 인터벌 정지
+            }
+        }
+        initMap();
+    </script>
+</body>
+</html>

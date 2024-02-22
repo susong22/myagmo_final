@@ -6,9 +6,10 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-   <!-- Bootstrap CSS부분-->
+   <!-- Bootstrap CSS부분--> 
    <title>대리점</title>
    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugqKOAcVwjdxOVtXgZDJJ1TAJ7giG8YY"></script>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> </head> 
 
@@ -23,7 +24,7 @@
    }
    .box{
     width: 90%;
-    height: 500px;
+    height: 35vw;
     border-radius: 15px;
     background-color: #f9f9f9;
     position: absolute;
@@ -32,7 +33,18 @@
     border: 1px solid #e0e0e0;
     padding: 20px;
     box-shadow: 40px 40px 8px rgba(0, 0, 0, 0.1);
-  }    
+    display: flex;
+    padding:10px ;
+    justify-content: space-between;
+  }
+  #map {
+      height: 500px;
+      width: 95%;
+  }
+  .name{
+    font-weight: bold;
+    
+  }
   </style>
 
 
@@ -42,20 +54,93 @@
       {% include 'summary/header.html' with content=farm_list %}
   </header>
     <div>
+      
       <div class="background">
         <div class="box">
-            <div style="display: flex; justify-content: space-between;">
-                <div>제목</div>
-                <div class="back_button" style="text-align: end;">
-                    <a href="{% url 'summary:summary_main' %}">
-                        <button type="button" class="btn-close" aria-label="Close" style="font-size: 20px;"></button>
-                    </a>
-                </div>
-            </div>
+          
+          <div id="map"></div>
+          <div class="back_button">
+            <a href="{% url 'summary:summary_main' %}">
+              <button type="button" class="btn-close" aria-label="Close" style="font-size: 20px;"></button>
+            </a>
+          </div>
         </div>
         
       </div>
     </div>
+
+    <script>
+      var map;
+      function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 36.300324, lng: 127.15997}, // 초기 중심 좌표 설정
+                zoom: 11.5, // 초기 줌 레벨 설정
+                mapTypeControl: false,
+                mapTypeId: google.maps.MapTypeId.SATELLITE
+            });
+            var contentString = '<div class="name" id="content">내 위치</div>';
+            var marker = new google.maps.Marker({
+                position: {lat: 36.300324, lng: 127.15997},
+                map: map,
+                title: 'Center Marker',
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200
+            });
+            infowindow.open(map, marker);
+
+            var contentString = '<div class="name" id="content">신흥건조기신논산대리점</div>';
+            var marker1 = new google.maps.Marker({
+                position: {lat: 36.2181, lng: 127.0898}, // 첫 번째 마커의 위치
+                map: map, // 해당 지도에 마커를 추가
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200
+            });
+            infowindow.open(map, marker1);
+
+            var contentString = '<div class="name" id="content">동일 농기계</div>';
+            var marker2 = new google.maps.Marker({
+                position: {lat: 36.2193, lng: 127.091}, // 첫 번째 마커의 위치
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200
+            });
+            infowindow.open(map, marker2);
+
+            var contentString = '<div class="name" id="content">LS트랙터 신논산대리점</div>';
+            var marker3 = new google.maps.Marker({
+                position: {lat: 36.2051, lng: 127.15997}, // 첫 번째 마커의 위치
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200
+            });
+            infowindow.open(map, marker3);
+
+            var contentString = '<div class="name" id="content">국제기계 신논산대리점</div>';
+            var marker4 = new google.maps.Marker({
+                position: {lat: 36.2058, lng: 127.0914}, // 첫 번째 마커의 위치
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200
+            });
+            infowindow.open(map, marker4);
+        }
+        initMap();
+    </script>
 
 
 

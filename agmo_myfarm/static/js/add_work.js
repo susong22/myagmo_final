@@ -22,13 +22,21 @@ var startLatLng, endLatLng;
 var startPoint; // 클릭한 시작점의 좌표를 저장할 변수
 var endPoint;
 let line;
+let line2;
+let line2_list = [];
 let polygon;
+let fieldName;
+var stat = 0;
+
+let expected_path;
+let pathArr;
 
 function initMap() {
                     //맵 보여주는 함수
     var selectedOption = $('#farmSelect').find('option:selected');
     var locationString = selectedOption.data("loc");
     var listString = selectedOption.data("obj");
+    fieldName = selectedOption.data("name");
     // 지도 위치
     var loca = JSON.parse(locationString.replace(/'/g, '"'));
     var initialLatLng = new google.maps.LatLng(loca.lat, loca.lng);
@@ -44,23 +52,47 @@ function initMap() {
     };
     let map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    polygon = new google.maps.Polygon({
-        paths: fieldPaths,
-        strokeColor: '#FF0000', // 선 색상
-        strokeOpacity: 0.6, // 선 투명도
-        strokeWeight: 5, // 선 두께
-        fillColor: '#FFFFFF', // 내부 색상
-        fillOpacity: 0.2 // 내부 투명도
-    });
-    polygon.setMap(map);
+
+
+    if (fieldPaths.length > 0) {
+        for (var i = 0; i < fieldPaths.length - 1; i++){
+            var start_pathing = new google.maps.LatLng(fieldPaths[i].lat, fieldPaths[i].lng);
+            var end_pathing = new google.maps.LatLng(fieldPaths[i+1].lat, fieldPaths[i+1].lng);
+            line2 = new google.maps.Polyline({
+                path: [start_pathing, end_pathing],
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.6,
+                strokeWeight: 5
+            });
+            line2.setMap(map);
+            line2_list.push(line2)
+        }
+        var start_pathing2 = new google.maps.LatLng(fieldPaths[0].lat, fieldPaths[0].lng);
+        var end_pathing2 = new google.maps.LatLng(fieldPaths[fieldPaths.length-1].lat, fieldPaths[fieldPaths.length-1].lng);
+        line2 = new google.maps.Polyline({
+            path: [start_pathing2, end_pathing2],
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.6,
+            strokeWeight: 5
+        });
+        line2.setMap(map);
+        line2_list.push(line2)
+    }
+
+
 
     $('#farmSelect').change(function () {
-        if (polygon) {
-            polygon.setMap(null);
-        }
+        
+        line2_list.forEach(function(line) {
+            line.setMap(null);
+        });
+        line2_list = [];
 
         var selectedOption = $(this).find('option:selected');
         var locationString = selectedOption.data("loc");
+        fieldName = selectedOption.data("name");
         
         var loca = JSON.parse(locationString.replace(/'/g, '"'));
         var locationLatLng = new google.maps.LatLng(loca.lat, loca.lng);;
@@ -68,15 +100,32 @@ function initMap() {
         
         var listString = selectedOption.data("obj");
         var fieldPaths = JSON.parse(listString.replace(/'/g, '"'));
-        polygon = new google.maps.Polygon({
-            paths: fieldPaths,
-            strokeColor: '#FF0000', // 선 색상
-            strokeOpacity: 0.6, // 선 투명도
-            strokeWeight: 5, // 선 두께
-            fillColor: '#FFFFFF', // 내부 색상
-            fillOpacity: 0.2 // 내부 투명도
-        });
-        polygon.setMap(map);
+        if (fieldPaths.length > 0) {
+            for (var i = 0; i < fieldPaths.length - 1; i++){
+                var start_pathing = new google.maps.LatLng(fieldPaths[i].lat, fieldPaths[i].lng);
+                var end_pathing = new google.maps.LatLng(fieldPaths[i+1].lat, fieldPaths[i+1].lng);
+                line2 = new google.maps.Polyline({
+                    path: [start_pathing, end_pathing],
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.6,
+                    strokeWeight: 5
+                });
+                line2.setMap(map);
+                line2_list.push(line2)
+            }
+            var start_pathing2 = new google.maps.LatLng(fieldPaths[0].lat, fieldPaths[0].lng);
+            var end_pathing2 = new google.maps.LatLng(fieldPaths[fieldPaths.length-1].lat, fieldPaths[fieldPaths.length-1].lng);
+            line2 = new google.maps.Polyline({
+                path: [start_pathing2, end_pathing2],
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.6,
+                strokeWeight: 5
+            });
+            line2.setMap(map);
+            line2_list.push(line2)
+        }
     });
     //polyline 그리기 위한 좌표값, 임의의 값임
 
@@ -123,6 +172,99 @@ function initMap() {
         });
         
     });
+
+    if (stat === 1) {
+        fetch('/home/path2/', {
+            method: "POST",
+            mode: "same-origin",
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+    
+        })
+        .then(response => response.json())
+        .then(data => {
+            expected_path = data.result
+            pathArr = JSON.parse(expected_path)
+
+            var expected_path_coords = pathArr.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+            var expected_path_polyline = new google.maps.Polyline({
+                path: expected_path_coords,
+                geodesic: true,
+                strokeColor: '#C0C0C0', // 흰색
+                strokeOpacity: 1.0,
+                strokeWeight: 4
+            });
+            expected_path_polyline.setMap(map);
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+        });
+        
+    }
+
+
+    else if (stat === 2) {
+        fetch('/home/path3/', {
+            method: "POST",
+            mode: "same-origin",
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+    
+        })
+        .then(response => response.json())
+        .then(data => {
+            expected_path = data.result
+            pathArr = JSON.parse(expected_path)
+
+            var expected_path_coords = pathArr.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+            var expected_path_polyline = new google.maps.Polyline({
+                path: expected_path_coords,
+                geodesic: true,
+                strokeColor: '#C0C0C0', // 흰색
+                strokeOpacity: 1.0,
+                strokeWeight: 4
+            });
+            expected_path_polyline.setMap(map);
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+        });
+        
+    }
+
+
+    else if (stat === 3) {
+        fetch('/home/path4/', {
+            method: "POST",
+            mode: "same-origin",
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+    
+        })
+        .then(response => response.json())
+        .then(data => {
+            expected_path = data.result
+            pathArr = JSON.parse(expected_path)
+
+            var expected_path_coords = pathArr.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+            var expected_path_polyline = new google.maps.Polyline({
+                path: expected_path_coords,
+                geodesic: true,
+                strokeColor: '#C0C0C0', // 흰색
+                strokeOpacity: 1.0,
+                strokeWeight: 4
+            });
+            expected_path_polyline.setMap(map);
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+        });
+        
+    }
+
 }
 //init map 끝
 
@@ -235,6 +377,30 @@ $.ajax({
     }
     });
 }
+
+
+document.getElementById("make_sol").addEventListener("click", function() {
+    
+    if (fieldName === "경작지1") {
+        alert('솔루션1 생성!');
+        stat = 1;
+        initMap();
+
+    }
+    else if (fieldName === "경작지2") {
+        alert('솔루션2 생성!');
+        stat = 2;
+        initMap();
+
+    }
+    else if (fieldName === "경작지3") {
+        alert('솔루션3 생성!');
+        stat = 3;
+        initMap();
+
+    }
+    else{alert("맞춤형 솔루션이 존재하지 않습니다.")}
+});
 
 window.onload = function() {
     initMap();

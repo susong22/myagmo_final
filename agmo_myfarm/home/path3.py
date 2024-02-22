@@ -14,8 +14,8 @@ def convert_coords(coord):
     return np.array(transformed_coords)
 
 
-def calculate_paths():
-    df = pd.read_excel("C:/Users/캐리어/song/myagmo_final/agmo_myfarm/data_file/AGMO_Dataset1_output.xlsx")
+def calculate_paths3():
+    df = pd.read_excel("C:/Users/캐리어/song/myagmo_final/agmo_myfarm/data_file/AGMO_Dataset3_output.xlsx")
 
     path_data1 = df.iloc[:, [4,5]]
     roll_data = df.iloc[:,9].values
@@ -35,8 +35,8 @@ def calculate_paths():
     print(len(agmo_data_edit))
 
     mid_index = edit_length // 2
-    traveled_path_data = agmo_data_edit[:mid_index].copy()
-    expected_path_data = agmo_data_edit[mid_index:].copy()
+    traveled_path_data = agmo_data_edit[:1].copy()
+    expected_path_data = agmo_data_edit[1:].copy()
 
     roll_data_past = roll_data[:mid_index].copy()
     roll_data_future = roll_data[mid_index:].copy()

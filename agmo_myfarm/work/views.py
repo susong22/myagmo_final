@@ -17,6 +17,11 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.geos import MultiPoint
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+from home.path import calculate_paths
+from home.path2 import calculate_paths2
+from home.path3 import calculate_paths3
+from home.path4 import calculate_paths4
+
 
 
 
@@ -30,6 +35,35 @@ def main(request):
 
     if request.method == 'GET':
         farm_list = FarmField.objects.all()
+        if FarmField.objects.exists():
+            if Works.objects.filter(work_fields=FarmField.objects.filter(is_selected=True)[0]):
+                if FarmField.objects.filter(is_selected=True)[0].field_name == '경작지1':
+                    traveled_path_data, expected_path_data, roll_data_past, roll_data_future, pitch_data_past, pitch_data_future = calculate_paths2()
+                    print('a')
+
+                elif FarmField.objects.filter(is_selected=True)[0].field_name == '경작지2':
+                    traveled_path_data, expected_path_data, roll_data_past, roll_data_future, pitch_data_past, pitch_data_future = calculate_paths3() 
+                    print('b')
+
+                elif FarmField.objects.filter(is_selected=True)[0].field_name == '경작지3':
+                    traveled_path_data, expected_path_data, roll_data_past, roll_data_future, pitch_data_past, pitch_data_future = calculate_paths4()
+                    print('c')
+                else: 
+                    traveled_path_data, expected_path_data, roll_data_past, roll_data_future, pitch_data_past, pitch_data_future = calculate_paths3()
+                    print('d')
+            else: 
+                traveled_path_data, expected_path_data, roll_data_past, roll_data_future, pitch_data_past, pitch_data_future = calculate_paths()
+                print('e')
+        else:
+            return render(request, 'work/empty.html')    
+
+        traveled_path_json = json.dumps(traveled_path_data.tolist())
+        expected_path_json = json.dumps(expected_path_data.tolist())
+        roll_data_past_json = json.dumps(roll_data_past.tolist())
+        roll_data_future_json = json.dumps(roll_data_future.tolist())
+        pitch_data_past_json = json.dumps(pitch_data_past.tolist())
+        pitch_data_future_json = json.dumps(pitch_data_future.tolist())
+                
         if FarmField.objects.exists():
             work_list = Works.objects.all()
             if Works.objects.exists():
@@ -46,6 +80,12 @@ def main(request):
                 'day_week':day_week,
                 'farm_list': farm_list,
                 'day_list': day_list,
+                'traveled_path_json': traveled_path_json, 
+                'expected_path_json': expected_path_json, 
+                'roll_data_past_json': roll_data_past_json,
+                'roll_data_future_json': roll_data_future_json,
+                'pitch_data_past_json': pitch_data_past_json,
+                'pitch_data_future_json': pitch_data_future_json
             }
             return render(request, 'work/work_main.html', content)
         else:
@@ -57,7 +97,7 @@ def add_work(request):
         year_list = [2024,2025,2026,2027,2028,2029,2030]
         farmfield_list = FarmField.objects.all()
         machine_list = ['써레', '파종기', '스프레이어']
-        crop_list = ['벼', '콩', '옥수수', '감자']
+        crop_list = ['쌀', '콩', '팥', '녹두']
 
         if request.method == 'GET':
 
@@ -153,8 +193,6 @@ def save_points(request):
     else:
         # POST 요청이 아닌 경우 에러 메시지를 반환합니다.
         return JsonResponse({'error': 'POST method required.'}, status=400)
-
-
 
 def weather_obj():
     sky_status = {
@@ -402,3 +440,5 @@ def weather_obj():
         else:
             print("Error Code:" + rescode)
     return wea
+
+

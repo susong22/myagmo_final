@@ -31,6 +31,9 @@
     border: 1px solid #e0e0e0;
     padding: 20px;
     box-shadow: 40px 40px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    padding:10px ;
+    justify-content: space-between;
   }    
   </style>
 
@@ -45,12 +48,14 @@
         <img src="https://i.ibb.co/4dHwtFd/3.png" style="width: 20vw;position: absolute;top: 15vw;right: 8vw;">
         <div class="box">
             <div style="display: flex; justify-content: space-between;">
-                <div>제목</div>
-                <div class="back_button" style="text-align: end;">
-                    <a href="{% url 'summary:summary_main' %}">
-                        <button type="button" class="btn-close" aria-label="Close" style="font-size: 20px;"></button>
-                    </a>
-                </div>
+              <div style="display: flex;flex-direction: column;padding-left: 20px;">
+            
+              </div>
+              <div class="back_button">
+                <a href="{% url 'summary:summary_main' %}">
+                  <button type="button" class="btn-close" aria-label="Close" style="font-size: 20px;"></button>
+                </a>
+              </div>
             </div>
         </div>
       </div>

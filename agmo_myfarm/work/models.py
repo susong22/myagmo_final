@@ -42,7 +42,7 @@ class Works(TimeStampedModel):
     contents = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     battery = models.IntegerField(null=True)
-
+    turn_over = models.BooleanField(default=False)
 
     start_point = models.PointField(null=True)
     end_point = models.PointField(null=True)

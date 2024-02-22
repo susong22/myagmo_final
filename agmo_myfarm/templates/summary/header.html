@@ -112,8 +112,26 @@
         </div>
       </div>
     </nav>
-    <script type="text/javascript" src="{% static 'js/field.js' %}"></script>
+    
     <script>
+      function getCookie(name) {
+       let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+
+
       var buttonContainer = document.getElementById('buttonContainer');
     
       // 마우스 휠 이벤트 리스너 등록
@@ -123,6 +141,34 @@
         // 이벤트 전파 중지
         event.preventDefault();
       });
+    const handleClick = (buttonId) => {
+    const but = document.getElementById(buttonId);
+    const allBut = document.querySelectorAll('.field-button');
+    const csrftoken = getCookie('csrftoken');
+    const butId = buttonId.split("-").pop();
+    const url =  + butId + "/select";
+    fetch(url, {
+        method: "POST",
+        mode: "same-origin",
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.result == "change") {
+            window.location.reload();
+        } else {
+            ;
+        }
+    })
+    .catch(error => {
+        console.error('Fetch Error:', error);
+    });
+
+}
+
     </script>
   </body>
 

@@ -10,4 +10,6 @@ urlpatterns = [
     path('soil_water/', views.soil_water, name='soil_water'),
     path('soil/', views.soil, name='soil'),
     path('solution/', views.solution, name='solution'),
+     path('<int:farmId>/select', views.field_select, name='field_select'),
+     path('search_change/',views.search_change, name='search_change'),
 ]

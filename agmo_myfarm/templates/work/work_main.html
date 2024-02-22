@@ -659,7 +659,7 @@
                                         <div style="display: flex; justify-content: end; position:relative; bottom:155px; right:52px; z-index: 4;">    
                                         <!-- 작업 play 버튼 -->
                                             <a href=#>
-                                                <button type="button" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                <button type="button" onclick="startSimulation()" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
                                                         <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
                                                     </svg>
@@ -668,15 +668,19 @@
                                         </div>
 
                                         <div style="display: flex; justify-content: end; position:relative; bottom:188px; ">    
-                                        <!-- 작업 play 버튼 -->
+                                        <!-- 작업 pause 버튼 -->
                                             <a href=#>
-                                                <button type="button" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                <button type="button" onclick="toggleSimulation()" class="btn btn-outline-primary" style="margin-left: 10px; margin-top: 15px; font-size:0px; --bs-btn-padding-y: .0rem; --bs-btn-padding-x: .5rem; --bs-btn-border-radius: 0.2rem; border-width:1px; padding-bottom: 0px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16" style="margin-right: 0;">
+                                                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                                                    </svg>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
                                                         <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5"/>
                                                     </svg>
                                                 </button> 
                                             </a>
                                         </div>
+                                        <div id="progress"></div>
                                             
                                     </div>
                                 </div>
@@ -732,6 +736,26 @@
             var decodedString2 = new DOMParser().parseFromString('<!doctype html><body>' + loc_list, 'text/html').body.textContent;
             var fieldPaths = JSON.parse(decodedString2.replace(/'/g, '"'));
 
+            var map;
+            var markers = [];
+            var traveled_path = JSON.parse('{{ traveled_path_json|escapejs }}');
+            var expected_path = JSON.parse('{{ expected_path_json|escapejs }}');
+            var roll_past = JSON.parse('{{ roll_data_past_json|escapejs }}');
+            var roll_future = JSON.parse('{{ roll_data_future_json|escapejs }}');
+            var pitch_past = JSON.parse('{{ pitch_data_past_json|escapejs }}');
+            var pitch_future = JSON.parse('{{ pitch_data_future_json|escapejs }}');
+            var intervalId;
+            var traveled_path_polyline; // 전역 변수로 선언
+            var expected_path_polyline;
+            var traveled_path_coords;
+            var expected_path_coords;
+            var simulationRunning = false;
+            var lastCoordinate;
+            var lastMarker;
+            var newMarker;
+            var progress = 0; // 진행률을 나타내는 변수
+            var expected_hour = 0;
+
             // 이제 fieldPaths를 사용하여 구글맵 polygon의 paths로 전달할 수 있습니다.
 
             // 맵을 초기화하고 표시하는 스크립트 부분
@@ -744,7 +768,7 @@
                     mapTypeControl: false,
                     mapTypeId: google.maps.MapTypeId.HYBRID,
                 };
-                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                map = new google.maps.Map(document.getElementById('map'), mapOptions);
                 var geocoder = new google.maps.Geocoder();
 
                 geocoder.geocode({ 'location': locationLatLng }, function (results, status) {
@@ -762,16 +786,167 @@
                     strokeColor: '#FF0000', // 선 색상
                     strokeOpacity: 0.6, // 선 투명도
                     strokeWeight: 5, // 선 두께
-                    fillColor: '#FFFFFF', // 내부 색상
-                    fillOpacity: 0.2 // 내부 투명도
+                    
                 });
-                polygon.setMap(map);
-            });
-                
+                polygon.setMap(map);                
+                });
+
+                var traveled_path_coords = traveled_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+                var expected_path_coords = expected_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+
+                // 폴리라인 그리기
+                traveled_path_polyline = new google.maps.Polyline({
+                    path: traveled_path_coords,
+                    geodesic: true,
+                    strokeColor: '#FFCC00', // 노란색
+                    strokeOpacity: 1.0,
+                    strokeWeight: 4
+                });
+                traveled_path_polyline.setMap(map);
+
+                expected_path_polyline = new google.maps.Polyline({
+                    path: expected_path_coords,
+                    geodesic: true,
+                    strokeColor: '#C0C0C0', // 흰색
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+                expected_path_polyline.setMap(map);
             }
+
+            function startSimulation() {
+                intervalId = setInterval(updatePath, 1000); // 1초 간격으로 예상 경로를 주행
+                simulationRunning = true;
+            }
+
+            function toggleSimulation() {
+                if (simulationRunning) {
+                    stopSimulation();
+                } else {
+                    startSimulation();
+                }
+            }
+
+            function stopSimulation() {
+                clearInterval(intervalId); // 시뮬레이션 중지
+                simulationRunning = false;
+            }
+
+            function updatePath() {
+                if (expected_path.length > 0) {
+                    console.log(expected_path.length);
+                    // traveled_path의 마지막 좌표를 expected_path의 첫 좌표로 이동
+                    traveled_path.push(expected_path[0]);
+                    // expected_path의 첫 좌표 삭제
+                    expected_path.shift();
+
+                    roll_past.push(roll_future[0]);
+                    roll_future.shift();
+                    pitch_past.push(pitch_future[0]);
+                    pitch_future.shift();
+
+                    // 마지막 마커를 업데이트
+                    if (markers.length > 0) {
+                        var marker = markers[markers.length - 1];
+                        marker.setPosition(new google.maps.LatLng(traveled_path[traveled_path.length - 1][0], traveled_path[traveled_path.length - 1][1]));
+                        marker.setIcon({
+                            url: 'https://cdn-icons-png.flaticon.com/512/2548/2548747.png',
+                            scaledSize: new google.maps.Size(35, 35)
+                        });
+                        console.log(markers);
+                    } else {
+                        // 처음 마커 생성
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(traveled_path[traveled_path.length - 1][0], traveled_path[traveled_path.length - 1][1]),
+                            map: map,
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 4,
+                                fillColor: '#FFCC00', // 노란색
+                                fillOpacity: 1,
+                                strokeWeight: 0
+                            }
+                        });
+                        markers.push(marker);
+                    }
+
+                    // 폴리라인 업데이트
+                    var traveled_path_coords = traveled_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+                    var expected_path_coords = expected_path.map(coord => new google.maps.LatLng(coord[0], coord[1]));
+                    traveled_path_polyline.setPath(traveled_path_coords);
+                    expected_path_polyline.setPath(expected_path_coords);
+
+                    var lastAngle = Math.abs(roll_past[roll_past.length - 1]);
+
+                    if(lastAngle > 30) {
+                        if(lastAngle > 45) {
+                            window.alert("전복!");
+                            toggleSimulation();
+                            var lastCoordinate = traveled_path[traveled_path.length - 1];
+                            if (lastMarker) {
+                                lastMarker.setMap(null); // 이전의 마커가 있으면 지도에서 제거합니다.
+                            }
+                            var lastMarker = new google.maps.Marker({
+                                position: new google.maps.LatLng(lastCoordinate[0], lastCoordinate[1]),
+                                map: map,
+                                zIndex: 9999,
+                                icon: {
+                                    path: google.maps.SymbolPath.CIRCLE,
+                                    scale: 4,
+                                    fillColor: '#FF0000', // 빨간색
+                                    fillOpacity: 1,
+                                    strokeWeight: 0
+                                }
+                            });
+                        }
+                        else {
+                            window.alert("전복위험!");
+                            toggleSimulation();
+                            var lastCoordinate = traveled_path[traveled_path.length - 1];
+                            if (lastMarker) {
+                                lastMarker.setMap(null); // 이전의 마커가 있으면 지도에서 제거합니다.
+                            }
+                            var lastMarker = new google.maps.Marker({
+                                position: new google.maps.LatLng(lastCoordinate[0], lastCoordinate[1]),
+                                map: map,
+                                icon: {
+                                    path: google.maps.SymbolPath.CIRCLE,
+                                    scale: 4,
+                                    fillColor: '#FF0000', // 빨간색
+                                    fillOpacity: 1,
+                                    strokeWeight: 0
+                                },
+                                zIndex: 9999,
+                            });
+                        }
+                    } else {
+                        console.log(lastAngle);
+                    }
+                    updateProgress(); // 진행률 업데이트
+                    
+                } else {
+                    clearInterval(intervalId); // expected_path가 더 이상 없을 때 인터벌 정지
+                }
+            }
+            function updateProgress() {
+                progress = (traveled_path.length / (expected_path.length + traveled_path.length)) * 100;
+                console.log(progress);
+                progress = Math.floor(progress); // 소수점 이하 부분을 제거하여 정수로 변환
+                expected_hour = expected_path.length * 2.5 /0.4 / 60;
+                expected_hour = Math.floor(expected_hour);
+                const progressBar = document.getElementById("progress");
+                progressBar.innerText = "Progress: " + progress + "%" + "  " + "예상시간: " + expected_hour + "분";
+            }
+
+
+
+//   -----------------------------------------------------------------------------------------------------------------
+
+
             // 맵을 초기화하는 함수를 호출합니다.
             window.onload = function() {
-            initMap();
+                initMap();
+                updateProgress();
             };
             var accordionButton = document.querySelector('.accordion-button');
 

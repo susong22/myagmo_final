@@ -30,6 +30,7 @@ class FarmField(models.Model):
     location_list = models.JSONField(null=True)
     location_name_detail = models.CharField(null=True)
     crop = models.JSONField(null=True)
+    solution_on = models.BooleanField(default=False)
     # soil_moisture = models.CharField(_("Name of User"), blank=True, max_length=255) 이부분도 적절한 포맷을 생각해볼 것
     
     weather_date = models.CharField(null=True)
