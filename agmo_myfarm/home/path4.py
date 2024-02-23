@@ -15,7 +15,7 @@ def convert_coords(coord):
 
 
 def calculate_paths4():
-    df = pd.read_excel("C:/Users/캐리어/song/myagmo_final/agmo_myfarm/data_file/AGMO_Dataset4_output.xlsx")
+    df = pd.read_excel("C:/Users/jungt/project-name/myagmo_final/agmo_myfarm/data_file/AGMO_Dataset4_output.xlsx")
 
     path_data1 = df.iloc[:, [4,5]]
     roll_data = df.iloc[:,8].values

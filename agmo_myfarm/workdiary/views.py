@@ -22,6 +22,8 @@ def update_view(request):
     if request.method == 'POST':
         diary_instance = WorkDiary.objects.first()
         # 날짜가 다르면  -> 그날 처음 완료하는거면
+        #diary_instance.fin_date =0
+        #diary_instance.save
         if diary_instance.fin_date != int(datetime.now().day):
             diary_instance.fin_date = int(datetime.now().day)
             diary_instance.save()
@@ -56,6 +58,7 @@ def work_info_view(request):
                     # 작업이 완료된 경우 'past' 상태로 설정
                     if query_date == WorkDiary.objects.first().fin_date:
                         status = 'past'
+                        #status='current'
                     else:
                         # 작업이 완료되지 않은 경우 날짜에 따라 상태 설정
                         if query_date < datetime.now().day:
